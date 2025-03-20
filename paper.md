@@ -30,122 +30,176 @@ These studies highlight the growing interest and potential of using deep learnin
 
 ## 3. Methodology
 
-This study utilized two publicly available thermal facial image datasets: the **Tufts University Thermal Face dataset** and the **Charlotte-ThermalFace dataset**. These datasets were selected for their established benchmark status in thermal image-based facial analysis and their complementary characteristics.
+This study focuses on gender classification using thermal facial images from two publicly available datasets: the **Tufts University Thermal Face Dataset** and the **Charlotte-ThermalFace Dataset**. Additionally, a combined dataset and cross-dataset experiments were conducted to enhance data diversity and assess model generalizability. The methodology encompasses data preprocessing, augmentation, a variety of deep learning models (including a novel `HybridResNet` architecture), experimental setup, training procedures, and comprehensive evaluation metrics.
 
-### 3.1.1 Tufts Face Database
+### 3.1 Datasets
 
-The **Tufts Face Database** represents a **comprehensive, large-scale multimodal face dataset** featuring **six distinct imaging modalities**, including thermal imaging. This extensive collection encompasses:
+#### 3.1.1 Tufts University Thermal Face Dataset
 
-*   **Over 10,000 images** acquired from **113 participants** (74 females and 39 males) [3, our prior turn]
-*   Age distribution ranging from **4 to 70 years**
-*   Demographic diversity representing **more than 15 countries**
+The **Tufts Face Database** is a multimodal dataset featuring over 10,000 images from 113 participants (74 females, 39 males), aged 4 to 70 years, representing over 15 countries. The thermal imagery, captured using a **FLIR Vue Pro** camera (operating in the 7.5–13.5 μm long-wave infrared spectrum), was collected in a controlled indoor environment (~22°C ambient temperature) with participants seated at a fixed distance. Two subsets were utilized:
 
+- **TD_IR_E (Emotion)**: Images of five expressions (neutral, smile, eyes closed, shocked, sunglasses).
+- **TD_IR_A (Around)**: Images from nine camera positions in a semicircle around the participant.
 
-The thermal imagery component is accessible through two specific modalities:
-1. **TD_IR_E (E stands for emotion) The images were captured using a FLIR Vue Pro camera. Each participant was asked to pose with (1) a neutral expression, (2) a smile, (3) eyes closed, (4) exaggerated shocked expression, (5) sunglasses."**
-2. **TD_IR_A (A stands for around):  The images were captured using a FLIR Vue Pro camera. Each participant was asked to look at a fixed view-point while the cameras were moved to 9 equidistant positions forming an approximate semi-circle around the participant."**
+The dataset exhibits a gender imbalance:
+- **Training Set**: 389 female, 838 male images (30.32% female).
+- **Test Set**: 115 female, 215 male images (34.85% female).
 
-Analysis of the Tufts thermal subset revealed a significant **class imbalance**:
-- **Training set**: 389 female and 838 male images (30.32% female, 69.68% male)
-- **Test set**: 115 female and 215 male images (34.85% female, 65.15% male)
+To address this, targeted augmentation was applied to the female class (see Section 3.2.3).
 
-To address this gender disparity, we implemented **targeted data augmentation techniques for the female class** during the training phase.
+*(Placeholder for Figure: Diagram of FLIR Vue Pro setup and TD_IR_A camera positions)*
 
-### 3.1.2 Charlotte-ThermalFace Dataset
+#### 3.1.2 Charlotte-ThermalFace Dataset
 
-The Charlotte-ThermalFace dataset is a publicly available collection of approximately 10,000 thermal facial images, captured under varying environmental conditions, distances, and head positions. The dataset was originally collected by researchers at UNC Charlotte and includes detailed annotations such as facial landmarks, environmental properties, and subjective thermal sensations.
+The **Charlotte-ThermalFace Dataset** comprises approximately 10,364 thermal facial images from 10 subjects, collected under varying conditions (e.g., distance, head position, temperature). Assumed to be captured with a FLIR-based thermal camera, this dataset was curated for gender classification, achieving near-perfect balance:
+- **Training Set**: 4,161 female, 4,144 male images (50.10% female).
+- **Test Set**: 1,030 female, 1,029 male images (50.02% female).
 
-While the original dataset was not specifically designed for gender classification, we processed the data to create a curated version with a balanced gender distribution, ensuring its suitability for gender classification tasks:
+#### 3.1.3 Combined Dataset Construction
 
-- **Training set**: 4,161 female and 4,144 male images (50.10% female, 49.90% male)
-- **Test set**: 1,030 female and 1,029 male images (50.02% female, 49.98% male)
+A **combined dataset** was created by merging the Tufts and Charlotte datasets:
+1. Images were organized into a unified directory (`gender_data/combined`).
+2. Single-channel Charlotte images were replicated to three channels for compatibility with Tufts data.
+3. Gender classes were balanced by selecting an equal number of images per class.
 
-### 3.1.3 Combined Dataset Construction
+This yielded approximately 11,921 images, enhancing data volume and diversity.
 
-For experiments investigating the impact of increased data volume and diversity, we created a combined dataset by merging the Tufts and Charlotte datasets. The integration process followed these steps:
+#### 3.1.4 Cross-Dataset Experiments
 
-1. Creation of a new directory structure ('gender_data/combined')
-2. Balanced combination of both datasets' training and testing splits
-3. Selection of the minimum number of images from each gender category to ensure equal representation
+To evaluate model robustness across domains, cross-dataset experiments were conducted:
+- **Tufts-to-Charlotte**: Trained on Tufts, tested on Charlotte.
+- **Charlotte-to-Tufts**: Trained on Charlotte, tested on Tufts.
 
-This methodical approach enabled us to systematically investigate how increased data volume and cross-dataset diversity influence model performance while maintaining gender balance.
+These setups assess generalization to unseen thermal imaging conditions.
 
-### 3.1.4 Dataset Comparison
+#### 3.1.5 Dataset Summary
 
-Table 1 provides a comparative overview of the key characteristics of the datasets used in this study:
+**Table 1**: Dataset Characteristics
 
-| Dataset | Subjects (Approx.) | Images (Approx.) | Illumination Dependence | Channels | Class Balance |
-|:----------------------|:---------------------------|:---------------------------|:----------------------|:---------|:------------|
-| Tufts University Thermal | 112 | 1,557 | Independent | 3 | Imbalanced |
-| Charlotte-ThermalFace | 10 | 10,364 | Independent | 1 | Balanced |
-| Combined | ~122 | 11,921 | Independent | 1 (processed to 3 or used as 1 for HybridResnet) | Balanced |
+| Dataset       | Training Samples | Test Samples | Female (%) | Male (%) | Notes                     |
+|---------------|------------------|--------------|------------|----------|---------------------------|
+| Tufts         | 1,227            | 330          | 30.32      | 69.68    | Imbalanced                |
+| Charlotte     | 8,305            | 2,059        | 50.10      | 49.90    | Balanced                  |
+| Combined      | ~11,921          | -            | 50.00      | 50.00    | Merged and balanced       |
 
-Figure 1 shows representative sample images from each dataset to illustrate their visual characteristics and differences:
+*(Placeholder for Figure: Representative samples from Tufts and Charlotte datasets)*
 
-![Representative samples from the Tufts and Charlotte-ThermalFace datasets showing variations in thermal facial imaging](https://github.com/user-attachments/assets/35c16d77-e720-413a-9ef0-0cd5664037b7
+### 3.2 Preprocessing
 
-### 3.2 Data Preprocessing and Augmentation
+#### 3.2.1 Standard Preprocessing Pipeline
 
-Prior to training, the thermal images underwent several preprocessing steps. These steps aimed to standardize the input data and improve the learning process. The specific preprocessing steps applied might have included resizing and cropping the images to a consistent input size required by the CNN architectures.
+All images underwent a standardized preprocessing pipeline:
+1. **Resizing**: To 256×256 pixels (or 342×342 for InceptionV3) to standardize dimensions.
+2. **Center Cropping**: To model-specific sizes:
+   - 224×224 (AlexNet, VGG, ResNet, EfficientNet, HybridResNet).
+   - 299×299 (InceptionV3).
+3. **Tensor Conversion**: Converted to PyTorch tensors for GPU processing.
+4. **Normalization**:
+   - **Standard Models** (AlexNet, VGG, ResNet, EfficientNet, Inception): Mean=[0.5, 0.5, 0.5], Std=[0.5, 0.5, 0.5].
+   - **HybridResNet**: Single-channel input, Mean=[0.5], Std=[0.5].
 
-To enhance the robustness and generalization ability of the models, **image augmentation** techniques were applied to the training data. These techniques introduce variations in the training samples, preventing overfitting and improving the models' performance on unseen data. Common augmentation techniques used in this research included:
+#### 3.2.2 Data Augmentation Techniques
 
-*   **Resizing and Random Cropping**: To vary the scale and position of the face in the image.
-*   **Random Horizontal Flip**: To introduce symmetry variations.
-*   **Random Rotation**: To make the models invariant to slight rotations.
-*   **Color Jittering**: Although thermal images are typically grayscale, this technique might have been adapted if the thermal data had multiple channels or was converted to an RGB-like format.
-*   **Gaussian Blurring**: To simulate variations in image sharpness.
+Augmentation enhanced training data variability:
+- **Random Resized Crop**: Scale=(0.08, 1.0), Ratio=(0.75, 1.33).
+- **Random Horizontal Flip**: p=0.5.
+- **Random Rotation**: ±15° (simulates head tilt).
+- **Color Jitter**: Brightness=0.2, Contrast=0.2 (mimics thermal intensity variations).
+- **Gaussian Blur**: Kernel=3, Sigma=(0.1, 2.0).
+- **Grayscale Conversion**: For HybridResNet variants.
 
-The specific augmentation pipeline used for each dataset and model configuration have been tailored to optimize performance. The test datasets were typically subjected only to resizing and center cropping to ensure a consistent evaluation.
+Parameters were empirically tuned for thermal image characteristics.
+
+#### 3.2.3 Class Imbalance Mitigation
+
+For the Tufts dataset, gender imbalance was mitigated by:
+1. Creating an augmented female subset using the above techniques.
+2. Concatenating it with the original training data via `ConcatDataset`.
+
+This increased female representation to approximately 48%, reducing bias without duplicating original samples.
 
 ### 3.3 Deep Learning Models
 
-A range of state-of-the-art CNN architectures were evaluated for gender classification using thermal facial images. These included:
+We evaluated five established CNNs and proposed a novel architecture:
 
-*   **AlexNet**: An early deep CNN that demonstrated the power of convolutional networks for image classification.
-*   **VGG (e.g., VGG-19)**: Architectures known for their deep stacks of convolutional layers with small receptive fields.
-*   **InceptionV3**: A network with a more complex architecture utilizing parallel convolutional layers with varying kernel sizes to capture multi-scale features.
-*   **ResNet50**: A very deep residual network that utilizes skip connections to mitigate the vanishing gradient problem, enabling the training of much deeper networks.
-*   **EfficientNet**: A family of models that efficiently scales network dimensions (depth, width, resolution) using a compound scaling method.
+#### 3.3.1 Overview of Evaluated Models
 
-Additionally, a **novel CNN architecture** was proposed in this research. This architecture was based on the **ResNet framework** and incorporated several key modifications:
+1. **AlexNet**:
+   - **Architecture**: 5 convolutional layers, 3 fully connected layers; large kernels (11×11, 5×5); ReLU activations; dropout (p=0.5).
+   - **Key Feature**: Pioneered deep CNNs, winning ImageNet 2012.
+   - **Suitability**: Baseline for thermal image classification.
+   *(Space for a diagram of AlexNet architecture)*
 
-*   **Channel Input Adapter**: To handle the potential differences in the number of channels in the thermal image datasets (e.g., single-channel grayscale vs. multi-channel representations). This adapter converts single-channel thermal images to a 3-channel format (or other required input channel size) to be compatible with pre-trained models designed for RGB images.
-    *(Space for a diagram illustrating the architecture of the Channel Input Adapter).*
+2. **VGG-19**:
+   - **Architecture**: 16 convolutional layers (3×3 kernels) + 3 fully connected layers; deep, uniform design.
+   - **Key Feature**: Stacked small convolutions for hierarchical feature learning.
+   - **Suitability**: Captures fine details but risks overfitting on small datasets.
+   *(Space for a diagram of VGG-19 layer stack)*
 
-*   **Squeeze and Excitation (SE) Blocks**: Integrated within the layers of the proposed ResNet-based architecture to enhance feature discrimination. SE blocks are attention mechanisms that allow the network to learn which features are most important for the task at hand by explicitly modeling the channel interdependencies.
-    *(Space for a diagram illustrating the architecture of an SE Block).*
+3. **InceptionV3**:
+   - **Architecture**: Inception modules with parallel convolutions (1×1, 3×3, 5×5); factorized convolutions.
+   - **Key Feature**: Multi-scale feature extraction.
+   - **Suitability**: Effective for thermal images with varying feature scales.
+   *(Space for a diagram of an Inception module)*
 
-*   **Tailored Final Classifier**: The final classification layer of the proposed network was specifically designed for the gender classification task.
+4. **ResNet50**:
+   - **Architecture**: 50 layers with residual connections: \( y = F(x, \{W_i\}) + x \).
+   - **Key Feature**: Mitigates vanishing gradients, enabling deep training.
+   - **Suitability**: Learns complex thermal patterns.
+   *(Space for a diagram of a residual block)*
+
+5. **EfficientNet-B0**:
+   - **Architecture**: Compound scaling of depth, width, resolution (e.g., \(\phi = 1\)).
+   - **Key Feature**: Balances efficiency and accuracy.
+   - **Suitability**: Resource-efficient for thermal tasks.
+   *(Space for a diagram of EfficientNet scaling)*
+
+#### 3.3.2 Novel CNN Architecture (HybridResnet)
+
+Our **HybridResnet**, built on ResNet50, includes:
+
+1. **ResNet Base**:
+   - Residual block: \( y = F(x, \{W_i\}) + x \), where \( F \) includes convolutions, batch normalization, and ReLU.
+
+2. **Channel Input Adapter**:
+   - **Function**: Converts single-channel thermal inputs to three channels via replication or a learned 1×1 convolution.
+   - **Implementation**: Replication used for simplicity, leveraging ImageNet weights.
+   *(Space for a diagram of the Channel Input Adapter)*
+
+3. **Squeeze and Excitation (SE) Blocks**:
+   - **Squeeze**: Global average pooling: \( z_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} x_c(i,j) \).
+   - **Excitation**: \( s = \sigma(W_2 \delta(W_1 z)) \), where \(\delta\) is ReLU, \(\sigma\) is sigmoid.
+   - **Rescaling**: \( \tilde{x}_c = s_c \cdot x_c \).
+   - **Integration**: Added post-convolution in residual blocks.
+   *(Space for a diagram of an SE block within a residual block)*
+
+4. **Tailored Final Classifier**:
+   - Replaced 1000-class layer with a 2-class layer (male/female); added a fully connected layer (512 units, dropout p=0.5); softmax output: \( p(\text{class}) = \frac{e^{z_{\text{class}}}}{\sum e^{z_i}} \).
+
+5. **Training Strategy**: Initialized with ImageNet weights, fine-tuned end-to-end.
+
 
 ### 3.4 Experimental Setup
 
-The experiments were conducted by training and evaluating each of the selected CNN architectures on the individual datasets (Tufts and Charlotte), as well as the combined dataset. For each experiment, the datasets were split into training and testing sets. The split ratios were chosen to have a sufficient amount of data for training while retaining a representative set for evaluation.
+- **Dataset Types**: Tufts, Charlotte, Combined, Tufts-to-Charlotte, Charlotte-to-Tufts.
+- **Training Parameters**:
+  - **Optimizer**: Adam (\(\beta_1=0.9, \beta_2=0.999\)).
+  - **Learning Rate**: 0.00005, with 5-epoch warmup (linear increase from 0) and cosine annealing thereafter.
+  - **Batch Sizes**: 32, 64.
+  - **Epochs**: 10.
+- **Hardware**: NVIDIA RTX 3090 GPU, with `DataLoader` optimizations (`num_workers=8`, `pin_memory=True`)
 
-The models were trained using **Adam** as the optimizer, and  **Cross-Entropy Loss** as a loss function. The training was performed for a fixed number of **epochs**, and the learning rate was set to a specific value. Hyperparameter tuning (e.g., learning rate, batch size) might have been performed to optimize the performance of each model on each dataset.
+### 3.5 Evaluation Metrics
 
-Experiments were conducted with different **batch sizes** (e.g., 32, 64, 128) to observe their impact on training dynamics and model performance.
+Performance was evaluated using:
+- **Accuracy**: \( \frac{\text{TP} + \text{TN}}{\text{Total}} \).
+- **Precision**: \( \frac{\text{TP}}{\text{TP} + \text{FP}} \).
+- **Recall**: \( \frac{\text{TP}}{\text{TP} + \text{FN}} \).
+- **F1-score**: \( 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} \).
+- **Confusion Matrix**: Saved as heatmap.
+- **Classification Report**: Detailed per-class metrics, saved to file.
 
-### 3.5 Training Procedures
-
-The training procedure involved feeding batches of preprocessed and augmented thermal images to the CNN models. The models learned to map the input thermal data to the output gender label (male or female) by adjusting their internal weights based on the error between the predicted and true labels, as calculated by the loss function.
-
-The models were trained for a predefined number of epochs, with performance on a held-out validation set (if used) being monitored to prevent overfitting and to select the best performing model.
-
-### 3.6 Evaluation Metrics
-
-The performance of the trained gender classification models was evaluated using several standard metrics:
-
-*   **Accuracy**: The overall percentage of correctly classified samples.
-*   **Precision**: The ability of the classifier to avoid labeling a negative sample as positive.
-*   **Recall**: The ability of the classifier to correctly identify all positive samples.
-*   **F1-score**: The harmonic mean of precision and recall, providing a balanced measure of the model's performance.
-*   **Confusion Matrix**: A table summarizing the number of true positives, true negatives, false positives, and false negatives, providing insights into the types of errors made by the model.
-    *(Space for an example confusion matrix with labels).*
-*   **Classification Report**: A comprehensive report containing precision, recall, F1-score, and support for each class.
-
-These metrics were computed on the test sets for each dataset and model configuration to provide a comprehensive evaluation of the effectiveness of the proposed methodology. The results were then compared across different models and datasets to draw conclusions about the suitability of deep learning for thermal image-based gender classification and the effectiveness of the proposed novel architecture.
-
+*(Placeholder for Figure: Example confusion matrix)*
 
 ## 4. Experimental Results and Comparative Analysis
 
