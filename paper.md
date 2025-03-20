@@ -30,19 +30,59 @@ These studies highlight the growing interest and potential of using deep learnin
 
 ## 3. Methodology
 
-This section details the methodology employed for gender classification using thermal facial images. It encompasses the datasets utilized, the preprocessing and augmentation techniques applied, the deep learning models investigated, the experimental setup, and the evaluation metrics used to assess the performance of the models.
+This study utilized two publicly available thermal facial image datasets: the **Tufts University Thermal Face dataset** and the **Charlotte-ThermalFace dataset**. These datasets were selected for their established benchmark status in thermal image-based facial analysis and their complementary characteristics.
 
-### 3.1 Datasets
+### 3.1.1 Tufts Face Database
 
-This research utilized two publicly available thermal facial image datasets: the **Tufts University Thermal Face dataset** and the **Charlotte-ThermalFace dataset**. These datasets were chosen due to their availability and relevance to the task of gender classification using thermal imagery.
+The **Tufts Face Database** represents a **comprehensive, large-scale multimodal face dataset** featuring **six distinct imaging modalities**, including thermal imaging. This extensive collection encompasses:
 
-*   **Tufts University Thermal Face dataset**: This dataset contains thermal images of human faces. A key characteristic of this dataset is a **class imbalance**, with a higher number of images for one gender compared to the other. This imbalance was addressed during the training process to ensure robust model learning.
-    *(Space for a table summarizing the number of samples per gender in the Tufts dataset before and after addressing class imbalance).*
+*   **Over 10,000 images** acquired from **113 participants** (74 females and 39 males) [3, our prior turn]
+*   Age distribution ranging from **4 to 70 years**
+*   Demographic diversity representing **more than 15 countries**
 
-*   **Charlotte-ThermalFace dataset**: This dataset provides another source of thermal facial images, offering a different distribution and potentially varying image characteristics compared to the Tufts dataset.
-    *(Space for a table summarizing the number of samples per gender in the Charlotte dataset).*
 
-Furthermore, to investigate the impact of combining datasets with differing characteristics, experiments were also conducted using a **combined dataset** consisting of images from both the Tufts and Charlotte datasets. This allowed for an assessment of the models' ability to generalize across different data distributions.
+The thermal imagery component is accessible through two specific modalities:
+1. **TD_IR_E (E stands for emotion) The images were captured using a FLIR Vue Pro camera. Each participant was asked to pose with (1) a neutral expression, (2) a smile, (3) eyes closed, (4) exaggerated shocked expression, (5) sunglasses."**
+2. **TD_IR_A (A stands for around):  The images were captured using a FLIR Vue Pro camera. Each participant was asked to look at a fixed view-point while the cameras were moved to 9 equidistant positions forming an approximate semi-circle around the participant."**
+
+Analysis of the Tufts thermal subset revealed a significant **class imbalance**:
+- **Training set**: 389 female and 838 male images (30.32% female, 69.68% male)
+- **Test set**: 115 female and 215 male images (34.85% female, 65.15% male)
+
+To address this gender disparity, we implemented **targeted data augmentation techniques for the female class** during the training phase.
+
+### 3.1.2 Charlotte-ThermalFace Dataset
+
+The Charlotte-ThermalFace dataset is a publicly available collection of approximately 10,000 thermal facial images, captured under varying environmental conditions, distances, and head positions. The dataset was originally collected by researchers at UNC Charlotte and includes detailed annotations such as facial landmarks, environmental properties, and subjective thermal sensations.
+
+While the original dataset was not specifically designed for gender classification, we processed the data to create a curated version with a balanced gender distribution, ensuring its suitability for gender classification tasks:
+
+- **Training set**: 4,161 female and 4,144 male images (50.10% female, 49.90% male)
+- **Test set**: 1,030 female and 1,029 male images (50.02% female, 49.98% male)
+
+### 3.1.3 Combined Dataset Construction
+
+For experiments investigating the impact of increased data volume and diversity, we created a combined dataset by merging the Tufts and Charlotte datasets. The integration process followed these steps:
+
+1. Creation of a new directory structure ('gender_data/combined')
+2. Balanced combination of both datasets' training and testing splits
+3. Selection of the minimum number of images from each gender category to ensure equal representation
+
+This methodical approach enabled us to systematically investigate how increased data volume and cross-dataset diversity influence model performance while maintaining gender balance.
+
+### 3.1.4 Dataset Comparison
+
+Table 1 provides a comparative overview of the key characteristics of the datasets used in this study:
+
+| Dataset | Subjects (Approx.) | Images (Approx.) | Illumination Dependence | Channels | Class Balance |
+|:----------------------|:---------------------------|:---------------------------|:----------------------|:---------|:------------|
+| Tufts University Thermal | 112 | 1,557 | Independent | 3 | Imbalanced |
+| Charlotte-ThermalFace | 10 | 10,364 | Independent | 1 | Balanced |
+| Combined | ~122 | 11,921 | Independent | 1 (processed to 3 or used as 1 for HybridResnet) | Balanced |
+
+Figure 1 shows representative sample images from each dataset to illustrate their visual characteristics and differences:
+
+![Representative samples from the Tufts and Charlotte-ThermalFace datasets showing variations in thermal facial imaging](https://github.com/user-attachments/assets/35c16d77-e720-413a-9ef0-0cd5664037b7
 
 ### 3.2 Data Preprocessing and Augmentation
 
