@@ -1,81 +1,32 @@
-## Detailed Outline for Research Paper
+## 1. Introduction
 
-### Title
-- **Gender Detection in Thermal Images Using Deep Learning: A Comprehensive Study and Novel CNN Architecture**
+Gender classification has become a fundamental task in computer vision, with numerous applications across various domains including in-cabin driver monitoring systems, human-computer interaction, video surveillance, retail analytics, and psychological analysis. Traditionally, researchers have focused on gender classification using visible spectrum images of the human face. However, the performance of these systems can be significantly affected by challenging environmental factors such as varying illumination conditions, shadows, occlusions, and the time of day.
 
-### Abstract
-- **Length**: Approximately 250-300 words (0.5 page).
-- **Content**:
-  - Briefly introduce the problem of gender classification in computer vision and the limitations of visible spectrum images.
-  - Highlight the potential of thermal imaging and deep learning (CNNs) as a solution.
-  - Summarize the methodology: evaluation of state-of-the-art CNNs, use of Tufts and Charlotte-ThermalFace datasets, and proposal of a novel ResNet-based architecture.
-  - Present key findings: performance comparisons, impact of dataset combination, and advantages of the proposed model.
-  - Conclude with the significance of the research and future directions.
-- **Instructions**: Write concisely, avoiding technical jargon where possible to appeal to a broad audience.
+To overcome these limitations, there has been a growing interest in exploring alternative or complementary sensing modalities, such as **thermal imaging**. Thermal imaging offers several advantages as it does not rely on external illumination and provides a distinct perspective on an imaged scene compared to conventional visible light sensors. This makes it a potentially more robust solution for gender classification in diverse and uncontrolled environments. Furthermore, thermal imaging can easily detect people even in total darkness, expanding its applicability in security systems. Beyond security, thermal signatures can provide complementary information in human-computer interaction, potentially revealing subtle physiological indicators relevant to gender.
 
----
+Despite the benefits, thermal images typically lack some of the detailed facial definitions present in visible spectrum images, posing a challenge for accurate classification. To address this, the application of **deep learning**, particularly **Convolutional Neural Networks (CNNs)**, has shown significant promise in learning intricate patterns from thermal data for gender classification.
 
-### 1. Introduction
-- **Length**: 1.5-2 pages (already provided, with minor additions suggested).
-- **Content**: (Your provided text, repeated here for completeness with added structure suggestion)
-  - **1.1 Background**:
-    - Gender classification as a key task in computer vision.
-    - Applications: in-cabin driver monitoring, human-computer interaction, surveillance, retail analytics, psychological analysis.
-    - Challenges with visible spectrum images: illumination, shadows, occlusions, time of day.
-  - **1.2 Motivation for Thermal Imaging**:
-    - Advantages: independence from external light, robustness in darkness, potential physiological cues.
-    - Comparison to visible spectrum imaging.
-  - **1.3 Challenges with Thermal Imaging**:
-    - Lack of detailed facial features compared to visible images.
-    - Need for advanced techniques like deep learning.
-  - **1.4 Research Objectives**:
-    - Evaluate state-of-the-art CNNs on thermal datasets.
-    - Investigate combining datasets with differing characteristics.
-    - Propose a novel CNN architecture tailored for thermal gender detection.
-  - **1.5 Contributions**:
-    - List your primary contributions (as in your intro).
-  - **1.6 Paper Structure**:
-    - Add this subsection to your intro.
-    - Briefly outline the content of Sections 2-6 (one sentence per section).
-- **Instructions**:
-  - Use your existing introduction text as the foundation.
-  - Add subheadings for clarity (e.g., 1.1, 1.2).
-  - Include "1.6 Paper Structure" at the end to guide readers.
+This paper investigates the effectiveness of deep learning models for gender detection using thermal facial images. We utilize two publicly available thermal image datasets, the **Tufts University Thermal Face dataset** and the **Charlotte-ThermalFace dataset**, both individually and in combination, to train and evaluate a range of state-of-the-art CNN architectures including **AlexNet**, **VGG**, **InceptionV3**, **ResNet50**, and **EfficientNet**. We address the differences in channel availability between the datasets and enhance the data through **image augmentation** techniques. Furthermore, we tackle the class imbalance present in the Tufts dataset to ensure robust training. To further advance the field, we propose a **novel CNN architecture** based on the ResNet framework, incorporating a **channel input adapter** to handle varying input channels and **Squeeze and Excitation (SE) blocks** within its layers to enhance feature discrimination, along with a tailored final classifier.
 
----
+The primary contributions of this paper include:
+*   A comprehensive evaluation of several state-of-the-art CNN models for gender classification on thermal facial images using the Tufts and Charlotte datasets.
+*   An investigation into the impact of combining datasets with differing channel characteristics.
+*   The development and evaluation of a novel CNN architecture specifically designed for thermal image-based gender detection, incorporating channel adaptation and attention mechanisms.
+*   An analysis of the challenges and potential of deep learning for gender classification using thermal imaging.
 
-### 2. Related Work
-- **Length**: 3-4 pages.
-- **Content**:
-  - **2.1 Traditional Methods for Gender Classification**:
-    - Early approaches using handcrafted features (e.g., edge detection, texture analysis) and classical machine learning (e.g., SVM, decision trees).
-    - Studies using visible spectrum images.
-    - **Explanation**: Discuss limitations (e.g., sensitivity to environmental factors).
-    - **Examples**: Cite 2-3 specific studies with brief summaries.
-  - **2.2 Deep Learning Approaches in Gender Classification**:
-    - Transition to CNNs for improved feature extraction.
-    - Studies using visible spectrum images (e.g., AlexNet, VGG on large datasets like CelebA).
-    - **Explanation**: Highlight advantages of deep learning over traditional methods.
-    - Introduction of alternative modalities (e.g., near-infrared).
-  - **2.3 Thermal Imaging in Gender Classification**:
-    - Overview of thermal imaging benefits (e.g., illumination invariance).
-    - Existing research on gender detection with thermal images.
-    - **Examples**: Summarize 2-3 notable studies, including datasets and methods used.
-    - **Explanation**: Discuss challenges (e.g., reduced facial detail) and how deep learning addresses them.
-  - **2.4 Dataset Usage in the Field**:
-    - Commonly used datasets: Tufts University Thermal Face, Charlotte-ThermalFace.
-    - **Table**: Create "Table 1: Summary of Key Datasets" (columns: Dataset Name, Size, Subjects, Gender Distribution, Channels).
-    - **Explanation**: Compare dataset characteristics and their implications.
-  - **2.5 Gaps in Current Literature**:
-    - Limited studies combining thermal datasets.
-    - Need for robust CNN architectures tailored to thermal data.
-    - **Explanation**: Emphasize how your work fills these gaps.
-- **Instructions**:
-  - Use citations extensively (aim for 15-20 references in this section).
-  - Include Table 1 after subsection 2.4 for a clear visual summary.
+The remainder of this paper is structured as follows: Section 2 provides a review of related work in gender classification using both traditional and deep learning methods with visible, near-infrared, and thermal imagery. Section 3 details the datasets used and the methodology employed, including preprocessing, augmentation techniques, and the architecture of the proposed CNN model. Section 4 presents the experimental results and a comparative analysis of the different models. Section 5 discusses the implications and limitations of our findings, and Section 6 concludes the paper with potential directions for future research.
 
----
+## 2. Literature Review
 
+The task of gender classification has been extensively studied in computer vision. Early approaches often relied on **conventional machine learning methods** and feature extraction techniques applied to visible spectrum images. Makinen and Raisamo and Reid et al. provided detailed surveys of these methods. Initial techniques involved training neural systems on small sets of frontal face images. Later, methods incorporated 3D head structure and image intensities for gender characterization. **Support Vector Machines (SVMs)** were also widely used, demonstrating competitive performance compared to other traditional classifiers. Techniques like AdaBoost, utilizing low-resolution grayscale images, and methods addressing perspective invariant recognition were also explored. More recently, researchers utilized local image descriptors like the Webers Local Surface Descriptor (WLD) and features based on shape, texture, and color extracted from frontal faces, achieving high accuracy on benchmark datasets like FERET.
+
+Recognizing the limitations of visible spectrum-based methods, researchers began to explore the potential of deducing gender information from other modalities, including **thermal and Near-Infrared (NIR) spectra**. Chen and Ross are noted as early proponents of human face-based gender classification systems using both thermal and NIR data, employing conventional feature extraction methods and classifiers like SVM, LDA, Adaboost, random forest, Gaussian mixture models, and multi-layer perceptrons. Their findings suggested that SVM with histogram-based gender classification yielded better performance on NIR and thermal spectra. Nguyen and Park proposed a gender classification system using joint visible and thermal spectrum data of the human body, utilizing feature extractors like Histogram of Oriented Gradients (HoG) and Multi-Local Binary Patterns (MLBP). Their results indicated improved accuracy by combining data from both modalities. Similarly, Abouelenien et al. explored multimodal datasets including audiovisual, thermal, and physiological recordings for automatic gender classification, again relying on conventional machine learning algorithms.
+
+The advent of **deep learning** and the success of **CNNs** in various computer vision tasks, particularly where high accuracy and robustness are required, led to their application in gender classification. Canziani et al. listed numerous pretrained models suitable for various applications. Dwivedi and Singh provided a comprehensive review of deep learning methodologies for robust gender classification using visible spectrum datasets. Ozbulak et al. investigated fine-tuning and SVM classification using CNN features for age and gender classification on visible datasets, demonstrating that transferred models can outperform task-specific models. Manyala et al. explored CNN-based methods for gender classification using NIR periocular images, achieving promising results. Baek et al. used combined visible and NIR data with two CNN architectures for robust gender classification from full human body images in surveillance environments.
+
+In the domain of **thermal image-based gender classification**, Farooq et al. conducted a comprehensive performance estimation of state-of-the-art CNNs, including AlexNet, VGG-19, MobileNet-V2, Inception-V3, ResNet-50, ResNet-101, DenseNet-121, DenseNet-201, and EfficientNet-B4, using the **Tufts thermal faces dataset** and the **Carl thermal faces dataset**. They also proposed a new CNN architecture, **GENNet**, specifically for this task. Li et al. focused on detecting age and gender from thermal images for personal thermal comfort prediction, utilizing a newly established dataset of thermal and visible-light images. They evaluated the performance of ResNet-50, ResNet-101, EfficientNet, and Inception v3, finding ResNet-50 to achieve a high gender accuracy on their thermal dataset. Chatterjee and Zaman proposed a deep-learning approach for general thermal image classification, utilizing pretrained ResNet-50 and VGGNet-19 and exploring the impact of Kalman filtering for denoising on the **Tufts** and **Charlotte-ThermalFace datasets**. Keerthi et al. investigated gender classification optimization with thermal images using InceptionV3 and AlexNet, also utilizing the "tufts" dataset.
+
+These studies highlight the growing interest and potential of using deep learning techniques for gender classification based on thermal imagery. Our work builds upon this foundation by providing a comparative analysis of several prominent CNN architectures on the **Tufts** and **Charlotte** datasets, addressing the challenges of varying input channels, class imbalance, and further proposing and evaluating a novel architecture tailored for this specific task with the incorporation of channel adaptation and Squeeze-and-Excitation mechanisms. This research aims to contribute to the advancement of robust and accurate gender detection systems using thermal imaging in diverse real-world applications.
 ## 3. Methodology
 
 ### 3.1 Datasets
@@ -88,7 +39,7 @@ The Tufts University Thermal Face Dataset represents a comprehensive multimodal 
 
 #### 3.1.2 Charlotte-ThermalFace Dataset
 
-The Charlotte-ThermalFace Dataset comprises approximately 10,364 thermal facial images from 10 subjects, collected under varying conditions (e.g., distance, head position, temperature). This dataset was not specifically created for gender detection tasks, but we repurposed it for our gender classification research. Based on image characteristics, we infer that data acquisition likely employed a FLIR-based thermal imaging system. In contrast to the Tufts collection, the Charlotte dataset exhibits near-perfect gender balance with approximately 50% female and 50% male images. This balanced distribution provided an advantageous counterpoint to the gender imbalance present in the Tufts dataset.
+The Charlotte-ThermalFace Dataset comprises approximately 10,364 thermal facial images from 10 subjects, collected under varying conditions (e.g., distance, head position, temperature). This dataset was not specifically created for gender detection tasks, but we repurposed it for our gender classification research. Based on image characteristics, we infer that data acquisition likely employed a FLIR-based thermal imaging system. In contrast to the Tufts collection, the Charlotte dataset exhibits near-perfect gender balance with approximately 50.10% female and 49.90% male. This balanced distribution provided an advantageous counterpoint to the gender imbalance present in the Tufts dataset.
 
 (Example Images from charlotte dataset)
 
@@ -306,15 +257,117 @@ The incorporation of SE blocks enhances the network’s sensitivity to informati
 **Figure 9** - Visual comparison between standard ResNet and your HybridResNet highlighting the key differences.
 
 
-### 3.4 Models for comparison:
-    - Models: AlexNet, VGG, InceptionV3, ResNet50, EfficientNet.
-    - **Explanation**: Briefly describe each architecture and rationale for selection (e.g., diversity in depth, complexity).
-    - **Table**: "Table 4: Baseline Model Overview" (columns: Model, Layers, Parameters, Original Use Case).
-- **Instructions**:
-  - Use subheadings extensively for clarity.
-  - Include Figures 1-3 and Tables 2-4 as visual aids, placing them immediately after their respective subsections.
+## 3.4 Model Comparison
 
----
+This section provides an evaluation of the diverse neural network architectures employed as baseline models to compare with our proposed ResNet-based framework for gender detection in thermal facial images. The selection criteria prioritized architectural diversity across model generations, parameter complexity, and feature extraction methodologies to establish a robust comparative foundation. By examining AlexNet, VGG-16, InceptionV3, ResNet50, and EfficientNet, we gain valuable insights into how different architectural paradigms process the unique characteristics of thermal facial signatures for gender classification tasks.
+
+### 3.4.1 Baseline Architectures
+
+#### 3.4.1.1 AlexNet: Foundational CNN Architecture
+
+AlexNet represents a fundamental benchmark in our evaluation due to its historical significance in revolutionizing computer vision through deep convolutional neural networks. Despite its relative simplicity by contemporary standards, this architecture offers critical insights into the minimum viable model complexity required for effective thermal feature discrimination. The network comprises five convolutional layers and three fully connected layers, creating a relatively shallow architecture with eight trainable layers.
+
+The model processes thermal input images resized to 224×224 pixels through a series of operations beginning with large-kernel convolutions (11×11 stride 4) that capture broad thermal gradients across facial regions. These initial layers are particularly relevant for thermal imaging, as they can detect coarse temperature variations corresponding to major facial vasculature patterns that exhibit gender-specific differences. Subsequent layers employ progressively smaller kernels (5×5, then 3×3) to refine feature representation, with max-pooling operations providing spatial reduction. The final network outputs a 4096-dimensional feature vector before classification, which must encapsulate gender-discriminative thermal signatures.
+
+AlexNet's inclusion allows us to evaluate whether early CNN architectural patterns can correctly capture the subtle temperature distribution differences between male and female thermal facial signatures. The model's Local Response Normalization (LRN) layers may also prove beneficial in standardizing thermal intensity variations across different capture conditions.
+
+#### 3.4.1.2 VGG-16: Homogeneous Deep Architecture
+
+VGG-16 extends architectural depth systematically through homogeneous convolutional blocks, enabling examination of how increased layer count (16 trainable layers) affects thermal feature learning without introducing advanced structural innovations. Its uniform design philosophy—consisting of stacked 3×3 convolutional layers followed by spatial reduction via max-pooling—provides a controlled comparison point for evaluating thermal feature learning in deeper networks.
+
+The network's consistent kernel size (3×3) throughout all convolutional layers creates a large effective receptive field while maintaining computational efficiency. This architecture may effectively capture multi-scale thermal patterns ranging from localized temperature peaks around the periorbital regions to broader thermal distributions across facial contours. 
+
+VGG-16's straightforward layer progression offers interpretability advantages, potentially allowing clearer attribution of which facial thermal regions contribute most significantly to gender classification decisions. This transparency could prove valuable for subsequent research into the physiological basis of gender-specific thermal signatures.
+
+#### 3.4.1.3 InceptionV3: Multi-Scale Processing Architecture
+
+InceptionV3 introduces sophisticated multi-scale processing capabilities through its innovative inception modules and factorized convolutions. This architectural approach allows simultaneous analysis of thermal features at multiple spatial resolutions—a potentially valuable characteristic for thermal gender classification, where discriminative information may exist at different scales, from fine vascular patterns to broader facial temperature zones.
+
+The architecture reduces computational complexity through strategic use of 1×1 convolutions for dimensionality reduction prior to expensive 3×3 and 5×5 operations. Its asymmetric kernel decompositions (replacing 5×5 filters with stacked 3×3 convolutions and factorizing n×n filters into consecutive 1×n and n×1 operations) enhance efficiency while preserving representational capacity. Input thermal images are resized to 299×299 pixels to align with InceptionV3's native resolution, providing increased spatial detail compared to other models in our evaluation.
+
+InceptionV3's auxiliary classifier, which emerges from an intermediate layer during training, potentially aids in propagating more direct gender-classification signals to earlier network stages. This feature may prove particularly beneficial for thermal imaging, where distinguishing gradient information can be more subtle than in visible-spectrum imagery.
+
+The network's branch diversity within inception modules enables it to learn specialized feature extractors for different thermal pattern types simultaneously—potentially capturing both the textural aspects of facial thermal patterns and their spatial configuration in a single unified architecture.
+
+#### 3.4.1.4 ResNet50: Residual Learning Framework
+
+ResNet50 employs innovative residual learning principles to achieve 50-layer depth without degradation in training accuracy. The architecture utilizes bottleneck blocks to mitigate vanishing gradients, enabling deeper feature hierarchies that may better capture the complex relationships in thermal facial imagery.
+
+Each residual block follows the fundamental mapping principle:
+
+$$\mathbf{y} = \mathcal{F}(\mathbf{x}, \{W_i\}) + \mathbf{x}$$
+
+where $\mathbf{x}$ and $\mathbf{y}$ represent input and output vectors respectively, and $\mathcal{F}$ denotes the residual function implemented through three consecutive convolutions (1×1 for dimensionality reduction, 3×3 for feature extraction, and 1×1 for restoration). This design enables stable training of substantially deeper networks while preserving gradient flow—a critical consideration when fine-tuning on limited thermal datasets where gradient signals may be weaker than in large-scale visible image collections.
+
+The architecture's identity shortcuts create direct paths for gradient flow, potentially enabling more effective training on the relatively subtle thermal features that distinguish genders. The bottleneck design (1×1, 3×3, 1×1 convolution pattern) reduces computational requirements while maintaining representational capacity, making ResNet50 an efficient option for thermal image processing despite its depth.
+
+ResNet50's batch normalization after each convolutional layer standardizes feature activations, which may be particularly beneficial for thermal imagery where absolute temperature values can vary across subjects and capture conditions. This normalization potentially helps the network focus on relative temperature distribution patterns rather than absolute values.
+
+#### 3.4.1.5 EfficientNet-B0: Optimized Scaling Architecture
+
+EfficientNet-B0 represents the state-of-the-art in efficiency-optimized architectures, leveraging compound scaling to balance depth, width, and resolution. This balanced approach optimizes the accuracy-efficiency trade-off, making it particularly relevant for potential deployment of thermal gender classification systems in resource-constrained environments.
+
+The architecture employs mobile inverted bottleneck (MBConv) layers as its primary building block, integrating squeeze-and-excitation (SE) mechanisms for adaptive channel attention. This attention mechanism can be formulated as:
+
+$$\mathbf{\tilde{X}} = s(\mathbf{X}) \cdot \mathbf{X}$$
+
+where $s(\mathbf{X})$ represents channel-wise attention weights derived from the SE block. This mechanism potentially enables the network to emphasize the most gender-discriminative thermal channels while suppressing less informative ones, creating an adaptive feature selection process beneficial for capturing subtle thermal differences between genders.
+
+Despite its relatively lightweight design (5.3 million parameters), EfficientNet-B0 achieves competitive accuracy on standard computer vision benchmarks. This raises the important question of whether efficient architectures can maintain high accuracy on thermal gender classification despite their reduced capacity, or if the subtle nature of thermal features requires larger models. The architecture's depth (82 layers) combined with its parameter efficiency provides an interesting contrast to other models in our evaluation.
+
+The swish activation function ($x \cdot \text{sigmoid}(x)$) used throughout EfficientNet potentially offers advantages over ReLU activations for thermal imagery by providing smoother gradients for small activation values, which may better preserve subtle thermal variation information during forward propagation.
+
+### Comparison of Architectural Characteristics
+
+**Table 4: Comprehensive Baseline Model Specifications**
+
+| Model | Depth | Parameters (M) | Input Size | Key Components | Potential Thermal Imaging Advantages |
+|-------------|-------|----------------|------------|------------------------------------|--------------------------------------------|
+| AlexNet | 8 | 61.0 | 224×224 | Large kernels (11×11), LRN | Effective capture of broad thermal gradients |
+| VGG-16 | 16 | 138.0 | 224×224 | Homogeneous 3×3 conv stacks | Consistent multi-scale feature extraction |
+| InceptionV3 | 48 | 23.9 | 299×299 | Factorized convolutions, Auxiliary classifier | Multi-resolution thermal pattern analysis |
+| ResNet50 | 50 | 25.6 | 224×224 | Bottleneck residual blocks | Deep thermal feature hierarchies with gradient preservation |
+| EfficientNet-B0 | 82 | 5.3 | 224×224 | MBConv with SE, Compound scaling | Adaptive attention to gender-discriminative thermal channels |
+
+**Figure 10: Architectural Diagrams** – Detailed schematic representations of each baseline model's layer configuration, highlighting specific components relevant to thermal feature extraction.
+
+### 3.4.2 Input Adaptation and Training Protocol
+
+#### 3.4.2.1 Thermal Image Preprocessing and Channel Adaptation
+
+Adapting standard CNN architectures designed for RGB images to thermal data requires careful consideration of input channel dimensionality. Our experimental protocol addresses this challenge through dataset-specific preprocessing pipelines:
+
+For the Charlotte dataset's single-channel thermal inputs, we employed channel replication to create compatible three-channel inputs. *This approach converts grayscale thermal intensity values into three identical channels during image loading, preserving the original thermal distribution while satisfying the input requirements of networks pretrained on RGB data.* While this method introduces redundancy, it maintains compatibility with the convolutional filters learned from visible spectrum imagery and allows us to leverage transfer learning effectively.
+
+The Tufts dataset provides native three-channel thermal representations, each encoding different thermal wavelength bands. These original multi-channel thermal representations were retained *and directly utilized without modification* to preserve the potential complementary information across thermal spectral bands. The three-channel structure of this data aligns naturally with the input expectations of conventional CNNs.
+
+#### 3.4.2.2 Transfer Learning and Fine-Tuning Strategy
+
+We initialize the baseline models with ImageNet-pretrained weights, freezing their initial layers to retain general feature extraction while training only a new final classification layer for thermal gender classification. This focuses optimization on our specific two-class task and minimizes overfitting.
+
+### 3.4.3 Benchmarking Objectives
+
+Our comparative analysis framework employs a multi-faceted evaluation approach. The benchmarking objectives address two critical dimensions:
+
+#### 1. Classification Performance Metrics
+Beyond standard accuracy, we evaluate models using metrics particularly relevant to biometric applications:
+- *Confusion matrices: To identify gender-specific misclassification patterns.*
+- *F1-score: Calculated per class via classification reports to balance precision and recall considerations.*
+
+These metrics are calculated across both individual datasets (Charlotte and Tufts separately) and combined data scenarios to assess model robustness under varying thermal imaging conditions and demographic distributions.
+
+#### 2. Cross-Dataset Generalization Assessment
+A critical challenge in thermal imaging for gender detection is generalization across different sensor technologies, environmental conditions, and demographic compositions. We conduct rigorous cross-dataset evaluations:
+- **Tufts-to-Charlotte:** Training on the Tufts dataset (with its three-channel representation) and evaluating on the Charlotte dataset.
+- **Charlotte-to-Tufts:** Training on the Charlotte dataset (with single-channel thermal data) and evaluating on the Tufts dataset.
+
+## 3.5 Experimental Setup
+
+To rigorously assess the efficacy of our baseline models and the proposed hybrid architecture, we designed a comprehensive experimental framework involving multiple dataset configurations. Specifically, we utilized the Tufts dataset, the Charlotte dataset, a combined dataset merging both, and two cross-dataset scenarios: training on Tufts and testing on Charlotte (Tufts-to-Charlotte), and vice versa (Charlotte-to-Tufts). These configurations enabled us to evaluate the models’ performance within individual datasets as well as their ability to generalize across distinct datasets, a critical aspect of real-world applicability.
+
+For training, all models were optimized using the Adam algorithm, configured with momentum parameters \(\beta_1 = 0.9\) and \(\beta_2 = 0.999\), which are widely adopted for their stability and efficiency in deep learning tasks. We set the initial learning rate to 0.00005, a value selected to ensure gradual parameter updates suitable for our architecture. To enhance training dynamics, we implemented a 5-epoch warmup phase during which the learning rate increased linearly from zero to the specified value, followed by cosine annealing for the subsequent epochs to promote smooth convergence to an optimal solution. We experimented with batch sizes of 32 and 64 to explore their effects on training stability and generalization performance, providing insights into the trade-offs between computational efficiency and model accuracy.
+
+Each model underwent training for 10 epochs, a duration determined through preliminary experiments to strike a balance between achieving convergence and minimizing computational overhead. The experiments were executed on an NVIDIA GeForce RTX 4090, a high-performance hardware platform that facilitated rapid iteration. To optimize data handling and reduce training bottlenecks, we employed PyTorch’s DataLoader with settings of `num_workers=8` and `pin_memory=True`, ensuring efficient data transfer to the GPU and maximizing throughput during training.
 
 ### 4. Experimental Results
 - **Length**: 5-6 pages.
