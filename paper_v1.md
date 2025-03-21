@@ -254,7 +254,7 @@ y = W_2 x_4 + b_2
 
 The incorporation of SE blocks enhances the network’s sensitivity to informative features, a crucial capability in gender classification for thermal images, where subtle differences in facial heat distribution can be discriminative. The adaptive nature of the attention mechanism allows the model to dynamically adjust its focus, improving both performance and robustness across diverse datasets.
 
-**Figure 9** - Visual comparison between standard ResNet and your HybridResNet highlighting the key differences.
+**Figure 8** - Visual comparison between standard ResNet and your HybridResNet highlighting the key differences.
 
 
 ## 3.4 Model Comparison
@@ -329,7 +329,7 @@ The swish activation function ($x \cdot \text{sigmoid}(x)$) used throughout Effi
 | ResNet50 | 50 | 25.6 | 224×224 | Bottleneck residual blocks | Deep thermal feature hierarchies with gradient preservation |
 | EfficientNet-B0 | 82 | 5.3 | 224×224 | MBConv with SE, Compound scaling | Adaptive attention to gender-discriminative thermal channels |
 
-**Figure 10: Architectural Diagrams** – Detailed schematic representations of each baseline model's layer configuration, highlighting specific components relevant to thermal feature extraction.
+**Figure 9: Architectural Diagrams** – Detailed schematic representations of each baseline model's layer configuration, highlighting specific components relevant to thermal feature extraction.
 
 ### 3.4.2 Input Adaptation and Training Protocol
 
