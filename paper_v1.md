@@ -77,7 +77,7 @@ Thermal imaging data presents unique challenges due to variations in sensor cali
 
 All thermal images were normalized using mean-centering with a value of 0.5 and standard deviation scaling of 0.5. This approach was selected over the conventional ImageNet normalization (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) as it proved more effective for thermal imagery during our preliminary experiments, likely due to the fundamentally different intensity distribution characteristics of thermal versus visible spectrum images.
 
-The Charlotte dataset's single-channel thermal images required special handling when used in models designed for multi-channel inputs. For our hybrid models specifically designed for thermal data, we maintained the single-channel representation, utilizing the grayscale transformation to preserve thermal intensity information. For standard RGB-designed architectures, we expanded the single channel through replication to maintain compatibility while preserving the original thermal information.
+The Charlotte dataset's single-channel thermal images required special handling when used in models designed for multi-channel inputs. For our TH-SE-ResNet specifically designed for thermal data, we maintained the single-channel representation, utilizing the grayscale transformation to preserve thermal intensity information. For standard RGB-designed architectures, we expanded the single channel through replication to maintain compatibility while preserving the original thermal information.
 
 Images were resized according to model-specific requirements—224×224 pixels for AlexNet, VGG, ResNet, and EfficientNet; 299×299 pixels for Inception. This standardization ensured consistent spatial dimensions while preserving the aspect ratio through center cropping, thus maintaining the integrity of facial thermal patterns.
 
@@ -88,14 +88,14 @@ Images were resized according to model-specific requirements—224×224 pixels f
 |------------|------------|----------------------|----------|-----------|
 | AlexNet/VGG/ResNet/EfficientNet | 224×224 | mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5] | 3 | Optimized for thermal intensity distribution |
 | Inception | 299×299 | mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5] | 3 | Maintained larger input size for finer detail capture |
-| Hybrid Models | 224×224 | mean=[0.5], std=[0.5] | 1 | Preserved original thermal information without channel duplication |
+| TH-SE-ResNet | 224×224 | mean=[0.5], std=[0.5] | 1 | Preserved original thermal information without channel duplication |
 
 
 ### 3.2.3 Data Augmentation Strategies
 
 We developed a sophisticated augmentation strategy tailored specifically for thermal facial imagery, carefully balancing the need for dataset expansion with the preservation of thermally significant features:
 
-We implemented distinct augmentation pipelines optimized for different network architectures. For RGB-designed models (AlexNet, VGG, ResNet, EfficientNet, Inception), we employed a comprehensive suite of transformations including random resized cropping, horizontal flipping, rotation (±15°), brightness and contrast adjustments (±20%), and Gaussian blurring. For our thermal-specific hybrid models, we employed a more conservative approach with grayscale conversion, random resized cropping, horizontal flipping, moderate rotation (±15°), and controlled affine transformations (±10% translation).
+We implemented distinct augmentation pipelines optimized for different network architectures. For RGB-designed models (AlexNet, VGG, ResNet, EfficientNet, Inception), we employed a comprehensive suite of transformations including random resized cropping, horizontal flipping, rotation (±15°), brightness and contrast adjustments (±20%), and Gaussian blurring. For our thermal-specific TH-SE-ResNet, we employed a more conservative approach with grayscale conversion, random resized cropping, horizontal flipping, moderate rotation (±15°), and controlled affine transformations (±10% translation).
 
 To address the pronounced gender imbalance in the Tufts dataset (30.32% female, 69.68% male), we implemented targeted augmentation for the underrepresented female class. This approach involved creating additional augmented samples exclusively for female subjects, effectively doubling the female representation in the training set while preserving the original male samples. This selective augmentation substantially improved class balance without introducing excessive redundancy or overfitting risks.
 
@@ -112,11 +112,11 @@ This carefully engineered preprocessing and augmentation pipeline provided our m
 **Table 3: Final Experimental Dataset Configurations**
 | Experiment | Training Set | Testing Set | Total Training Images | Total Testing Images |
 |------------|--------------|-------------|------------------------|----------------------|
-| Tufts-only | Tufts train | Tufts test | ~1,600* | ~330* |
-| Charlotte-only | Charlotte train | Charlotte test | ~16,000* | ~2,000* |
+| Tufts-only | Tufts train | Tufts test | ~1,600* | 330 |
+| Charlotte-only | Charlotte train | Charlotte test | ~16,000* | 2,000 |
 | Combined | Combined train | Combined test | 18,200 | 2,290 |
-| Tufts-to-Charlotte | Tufts train | Charlotte test | ~1,600* | ~4,000* |
-| Charlotte-to-Tufts | Charlotte train | Tufts test | ~16,000* | ~450* |
+| Tufts-to-Charlotte | Tufts train | Charlotte test | ~1,600* | 2,000 |
+| Charlotte-to-Tufts | Charlotte train | Tufts test | ~16,000* | 330 |
 *Approximate values after augmentation
 
 **Figure 4: Complete Data Preprocessing and Augmentation Pipeline** - A flowchart showing the end-to-end process from raw dataset organization through partitioning, normalization, augmentation, to final training/testing sets.
@@ -130,9 +130,11 @@ Our research introduces a sophisticated deep learning framework built upon a mod
 
 ResNet-50 strikes an exceptional balance between computational efficiency and representational power. Its 50-layer depth facilitates the hierarchical extraction of features, ranging from low-level details such as edges and textures to high-level semantic patterns, which are essential for discerning subtle gender specific cues in thermal images. Furthermore, initializing the model with pretrained weights from ImageNet provides a robust starting point. Although thermal images differ from natural images, the general visual features learned from ImageNet—such as edge detection and texture analysis—serve as transferable knowledge that can be fine-tuned to adapt to the our domain. This transfer learning approach accelerates convergence and enhances performance, particularly when training data is limited.
 
+It is worth noting that the final architecture emerged from a rigorous iterative development process. Multiple architectural variants were systematically evaluated, with each iteration informing subsequent refinements based on empirical performance assessments. This methodical approach to model selection enabled us to identify the optimal configuration presented in this study.
+
 The proposed architecture enhances the standard ResNet-50 by integrating three key modifications: a Channel Input Adapter to handle single-channel inputs, Squeeze-and-Excitation (SE) blocks to improve feature representation, and a redesigned classifier head to optimize classification performance. Each component is meticulously crafted to align with the implementation in the provided code, ensuring consistency between the theoretical design and practical execution.
 
-- **Figure 5**: "Overall Architecture of HybridResNet" - A comprehensive diagram showing the complete model architecture with all components connected, highlighting the modifications to the standard ResNet-50.
+- **Figure 5**: "Overall Architecture of TH-SE-ResNet" - A comprehensive diagram showing the complete model architecture with all components connected, highlighting the modifications to the standard ResNet-50.
 
 ### 3.3.2 Channel Input Adapter
 
@@ -254,7 +256,7 @@ y = W_2 x_4 + b_2
 
 The incorporation of SE blocks enhances the network’s sensitivity to informative features, a crucial capability in gender classification for thermal images, where subtle differences in facial heat distribution can be discriminative. The adaptive nature of the attention mechanism allows the model to dynamically adjust its focus, improving both performance and robustness across diverse datasets.
 
-**Figure 8** - Visual comparison between standard ResNet and your HybridResNet highlighting the key differences.
+**Figure 8** - Visual comparison between standard ResNet and your TH-SE-ResNet highlighting the key differences.
 
 
 ## 3.4 Model Comparison
@@ -347,23 +349,19 @@ We initialize the baseline models with ImageNet-pretrained weights, freezing the
 
 ### 3.4.3 Benchmarking Objectives
 
-Our comparative analysis framework employs a multi-faceted evaluation approach. The benchmarking objectives address two critical dimensions:
+Our comparative analysis framework employs a multi-faceted evaluation approach. The benchmarking objectives address two critical dimensions in assessing model performance.
 
 #### 1. Classification Performance Metrics
-Beyond standard accuracy, we evaluate models using metrics particularly relevant to biometric applications:
-- *Confusion matrices: To identify gender-specific misclassification patterns.*
-- *F1-score: Calculated per class via classification reports to balance precision and recall considerations.*
 
-These metrics are calculated across both individual datasets (Charlotte and Tufts separately) and combined data scenarios to assess model robustness under varying thermal imaging conditions and demographic distributions.
+We conduct a thorough evaluation using metrics particularly relevant to biometric applications beyond standard accuracy measures. Confusion matrices are analyzed to identify potential gender-specific misclassification patterns and biases in the thermal domain. F1-scores are calculated for each gender class through detailed classification reports, providing a balanced measure of precision and recall. These assessments are performed both on individual thermal datasets (Charlotte and Tufts separately) and in combined data scenarios to evaluate model robustness across varying thermal imaging conditions and demographic distributions.
 
 #### 2. Cross-Dataset Generalization Assessment
-A critical challenge in thermal imaging for gender detection is generalization across different sensor technologies, environmental conditions, and demographic compositions. We conduct rigorous cross-dataset evaluations:
-- **Tufts-to-Charlotte:** Training on the Tufts dataset (with its three-channel representation) and evaluating on the Charlotte dataset.
-- **Charlotte-to-Tufts:** Training on the Charlotte dataset (with single-channel thermal data) and evaluating on the Tufts dataset.
+
+An important challenge in thermal imaging-based gender detection is the ability to generalize across different thermal sensor technologies, environmental conditions, and demographic compositions. To address this, we implement rigorous cross-dataset evaluations. The Tufts-to-Charlotte transfer involves training models on the Tufts dataset with its three-channel thermal representation and subsequently evaluating them on the Charlotte dataset. Conversely, the Charlotte-to-Tufts transfer involves training models using the Charlotte dataset's single-channel thermal representation and testing them on the Tufts dataset. This cross-dataset validation provides critical insights into the real-world applicability of deep learning models for gender detection in thermal facial imagery across different acquisition scenarios.
 
 ## 3.5 Experimental Setup
 
-To rigorously assess the efficacy of our baseline models and the proposed hybrid architecture, we designed a comprehensive experimental framework involving multiple dataset configurations. Specifically, we utilized the Tufts dataset, the Charlotte dataset, a combined dataset merging both, and two cross-dataset scenarios: training on Tufts and testing on Charlotte (Tufts-to-Charlotte), and vice versa (Charlotte-to-Tufts). These configurations enabled us to evaluate the models’ performance within individual datasets as well as their ability to generalize across distinct datasets, a critical aspect of real-world applicability.
+To rigorously assess the efficacy of our baseline models and the proposed TH-SE-ResNet architecture, we designed a comprehensive experimental framework involving multiple dataset configurations. Specifically, we utilized the Tufts dataset, the Charlotte dataset, a combined dataset merging both, and two cross-dataset scenarios: training on Tufts and testing on Charlotte (Tufts-to-Charlotte), and vice versa (Charlotte-to-Tufts). These configurations enabled us to evaluate the models’ performance within individual datasets as well as their ability to generalize across distinct datasets, a critical aspect of real-world applicability.
 
 For training, all models were optimized using the Adam algorithm, configured with momentum parameters \(\beta_1 = 0.9\) and \(\beta_2 = 0.999\), which are widely adopted for their stability and efficiency in deep learning tasks. We set the initial learning rate to 0.00005, a value selected to ensure gradual parameter updates suitable for our architecture. To enhance training dynamics, we implemented a 5-epoch warmup phase during which the learning rate increased linearly from zero to the specified value, followed by cosine annealing for the subsequent epochs to promote smooth convergence to an optimal solution. We experimented with batch sizes of 32 and 64 to explore their effects on training stability and generalization performance, providing insights into the trade-offs between computational efficiency and model accuracy.
 
