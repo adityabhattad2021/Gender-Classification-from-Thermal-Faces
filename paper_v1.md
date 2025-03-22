@@ -351,33 +351,24 @@ We initialize the baseline models with ImageNet-pretrained weights, freezing the
 
 Our comparative analysis framework employs a multi-faceted evaluation approach. The benchmarking objectives address two critical dimensions in assessing model performance.
 
-#### 1. Classification Performance Metrics
+#### 3.4.3.1 Classification Performance Metrics
 
 We conduct a thorough evaluation using metrics particularly relevant to biometric applications beyond standard accuracy measures. Confusion matrices are analyzed to identify potential gender-specific misclassification patterns and biases in the thermal domain. F1-scores are calculated for each gender class through detailed classification reports, providing a balanced measure of precision and recall. These assessments are performed both on individual thermal datasets (Charlotte and Tufts separately) and in combined data scenarios to evaluate model robustness across varying thermal imaging conditions and demographic distributions.
 
-#### 2. Cross-Dataset Generalization Assessment
+#### 3.4.3.2 Cross-Dataset Generalization Assessment
 
 An important challenge in thermal imaging-based gender detection is the ability to generalize across different thermal sensor technologies, environmental conditions, and demographic compositions. To address this, we implement rigorous cross-dataset evaluations. The Tufts-to-Charlotte transfer involves training models on the Tufts dataset with its three-channel thermal representation and subsequently evaluating them on the Charlotte dataset. Conversely, the Charlotte-to-Tufts transfer involves training models using the Charlotte dataset's single-channel thermal representation and testing them on the Tufts dataset. This cross-dataset validation provides critical insights into the real-world applicability of deep learning models for gender detection in thermal facial imagery across different acquisition scenarios.
 
-## 3.5 Experimental Setup
-
+## 4. Experimental Results
+### 4.1 Experimental Setup
 To rigorously assess the efficacy of our baseline models and the proposed TH-SE-ResNet architecture, we designed a comprehensive experimental framework involving multiple dataset configurations. Specifically, we utilized the Tufts dataset, the Charlotte dataset, a combined dataset merging both, and two cross-dataset scenarios: training on Tufts and testing on Charlotte (Tufts-to-Charlotte), and vice versa (Charlotte-to-Tufts). These configurations enabled us to evaluate the models’ performance within individual datasets as well as their ability to generalize across distinct datasets, a critical aspect of real-world applicability.
 
 For training, all models were optimized using the Adam algorithm, configured with momentum parameters \(\beta_1 = 0.9\) and \(\beta_2 = 0.999\), which are widely adopted for their stability and efficiency in deep learning tasks. We set the initial learning rate to 0.00005, a value selected to ensure gradual parameter updates suitable for our architecture. To enhance training dynamics, we implemented a 5-epoch warmup phase during which the learning rate increased linearly from zero to the specified value, followed by cosine annealing for the subsequent epochs to promote smooth convergence to an optimal solution. We experimented with batch sizes of 32 and 64 to explore their effects on training stability and generalization performance, providing insights into the trade-offs between computational efficiency and model accuracy.
 
 Each model underwent training for 10 epochs, a duration determined through preliminary experiments to strike a balance between achieving convergence and minimizing computational overhead. The experiments were executed on an NVIDIA GeForce RTX 4090, a high-performance hardware platform that facilitated rapid iteration. To optimize data handling and reduce training bottlenecks, we employed PyTorch’s DataLoader with settings of `num_workers=8` and `pin_memory=True`, ensuring efficient data transfer to the GPU and maximizing throughput during training.
-
-### 4. Experimental Results
-- **Length**: 5-6 pages.
-- **Content**:
-  - **4.1 Experimental Setup**:
-    - Hardware: GPU specifications (e.g., NVIDIA RTX 3090).
-    - Software: Frameworks (e.g., PyTorch, TensorFlow), libraries.
-    - Evaluation metrics: Accuracy, precision, recall, F1-score.
-    - **Explanation**: Describe train-test split or cross-validation strategy.
-  - **4.2 Results on Individual Datasets**:
+## 4.2 Results on Individual Datasets**:
     - **4.2.1 Tufts Dataset**:
-      - **Table**: "Table 5: Performance on Tufts Dataset" (columns: Model, Accuracy, Precision, Recall, F1).
+      - **Table**: Table 5: Performance on Tufts Dataset" (columns: Model, Accuracy, Precision, Recall, F1).
       - **Explanation**: Analyze top performers and why (e.g., deeper models handle limited features better).
     - **4.2.2 Charlotte Dataset**:
       - **Table**: "Table 6: Performance on Charlotte Dataset" (columns as above).
