@@ -258,10 +258,62 @@ The incorporation of SE blocks enhances the network’s sensitivity to informati
 
 **Figure 8** - Visual comparison between standard ResNet and your TH-SE-ResNet highlighting the key differences.
 
+### 3.3.4 Unified Equation
+
+The complete TherSE-ResNet architecture can be expressed as a composition of three key components: the Channel Input Adapter, the ResNet backbone with SE blocks, and the modified classifier head. This composition is mathematically formulated as:
+
+\[
+f_{\text{TherSE-ResNet}}(x) = g_{\text{FC}} \circ f_{\text{ResNet+SE}} \circ h_{\text{CIA}}(x)
+\]
+
+where \( x \in \mathbb{R}^{1 \times H \times W} \) represents the single-channel thermal input image, \( h_{\text{CIA}} \) is the Channel Input Adapter, \( f_{\text{ResNet+SE}} \) is the ResNet backbone enhanced with SE blocks, and \( g_{\text{FC}} \) is the modified classifier head.
+
+#### 3.3.4.1 Channel Input Adapter
+
+The Channel Input Adapter transforms the single-channel input into a three-channel representation through a sequence of convolutional operations:
+
+\[
+h_{\text{CIA}}(x) = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 3}\left(\text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 32}(x)\right)\right)\right)\right)\right)
+\]
+
+The output of the Channel Input Adapter, \( h_{\text{CIA}}(x) \in \mathbb{R}^{3 \times H \times W} \), is then processed by the ResNet backbone with integrated SE blocks.
+
+#### 3.3.4.2 ResNet with SE Blocks
+
+The backbone processes the input through a series of layers:
+
+\[
+f_{\text{ResNet+SE}}(x) = L_4(L_3(L_2(L_1(\text{Pool}(\text{ReLU}(\text{BN}(\text{Conv}_{7 \times 7, 64}(x))))))))
+\]
+
+where each layer \( L_i \) consists of multiple bottleneck modules with SE blocks added to their outputs.
+
+#### 3.3.4.3 Squeeze-and-Excitation (SE) Block
+
+The SE block operates on feature maps using the following formula:
+
+\[
+\text{SE}(F) = F \cdot \sigma(W_2(\delta(W_1(\text{GAP}(F)))))
+\]
+
+where \( F \) represents the feature maps, GAP is global average pooling (adaptive to input dimensions), \( \delta \) is the ReLU activation, \( \sigma \) is the sigmoid activation, and \( \cdot \) denotes channel-wise multiplication.
+
+#### 3.3.4.4 Classifier Head
+
+The modified classifier head processes the extracted features through:
+
+\[
+g_{\text{FC}}(x) = W_2(D_{0.3}(\text{SE}(\text{ReLU}(W_1(D_{0.5}(x))))))
+\]
+
+where \( W_1 \in \mathbb{R}^{512 \times 2048} \) and \( W_2 \in \mathbb{R}^{\text{num\_classes} \times 512} \) are learnable weight matrices, and \( D_p \) represents dropout with probability \( p \).
+
+This unified mathematical formulation captures the key architectural components of our TherSE-ResNet, highlighting the integration of the Channel Input Adapter for domain-specific processing, the SE blocks for adaptive feature recalibration, and the enhanced classifier head for optimized performance in thermal image classification.
+
 
 ## 3.4 Model Comparison
 
-This section provides an evaluation of the diverse neural network architectures employed as baseline models to compare with our proposed ResNet-based framework for gender detection in thermal facial images. The selection criteria prioritized architectural diversity across model generations, parameter complexity, and feature extraction methodologies to establish a robust comparative foundation. By examining AlexNet, VGG-16, InceptionV3, ResNet50, and EfficientNet, we gain valuable insights into how different architectural paradigms process the unique characteristics of thermal facial signatures for gender classification tasks.
+This section provides an evaluation of the diverse neural network architectures employed as baseline models to compare with our proposed ResNet-based framework for gender detection in thermal facial images. The selection criteria prioritized architectural diversity across model generations, parameter complexity, and feature extraction methodologies to establish a robust comparative foundation. These architectures also represent frameworks frequently encountered in the thermal imaging literature, facilitating contextual interpretation of our results within the broader research landscape. By examining AlexNet, VGG-16, InceptionV3, ResNet50, and EfficientNet, we gain valuable insights into how different architectural paradigms process the unique characteristics of thermal facial signatures for gender classification tasks.
 
 ### 3.4.1 Baseline Architectures
 
@@ -366,10 +418,47 @@ To rigorously assess the efficacy of our baseline models and the proposed TH-SE-
 For training, all models were optimized using the Adam algorithm, configured with momentum parameters \(\beta_1 = 0.9\) and \(\beta_2 = 0.999\), which are widely adopted for their stability and efficiency in deep learning tasks. We set the initial learning rate to 0.00005, a value selected to ensure gradual parameter updates suitable for our architecture. To enhance training dynamics, we implemented a 5-epoch warmup phase during which the learning rate increased linearly from zero to the specified value, followed by cosine annealing for the subsequent epochs to promote smooth convergence to an optimal solution. We experimented with batch sizes of 32 and 64 to explore their effects on training stability and generalization performance, providing insights into the trade-offs between computational efficiency and model accuracy.
 
 Each model underwent training for 10 epochs, a duration determined through preliminary experiments to strike a balance between achieving convergence and minimizing computational overhead. The experiments were executed on an NVIDIA GeForce RTX 4090, a high-performance hardware platform that facilitated rapid iteration. To optimize data handling and reduce training bottlenecks, we employed PyTorch’s DataLoader with settings of `num_workers=8` and `pin_memory=True`, ensuring efficient data transfer to the GPU and maximizing throughput during training.
-## 4.2 Results on Individual Datasets**:
-    - **4.2.1 Tufts Dataset**:
-      - **Table**: Table 5: Performance on Tufts Dataset" (columns: Model, Accuracy, Precision, Recall, F1).
-      - **Explanation**: Analyze top performers and why (e.g., deeper models handle limited features better).
+
+
+## 4.2 Results on Individual Datasets
+### 4.2.1 Tufts Dataset
+
+The Tufts dataset experiments yielded notable performance variations across the six tested models and two batch size configurations. Table 5 presents a comprehensive performance comparison, highlighting the accuracy, precision, recall, and F1 scores achieved by each model architecture.
+
+##### Table 5: Performance on Tufts Dataset
+
+| Model | Batch Size | Accuracy | Precision (weighted) | Recall (weighted) | F1 (weighted) |
+|-------|------------|----------|----------------------|-------------------|---------------|
+| AlexNet | 32 | 0.86 | 0.86 | 0.86 | 0.85 |
+| AlexNet | 64 | 0.85 | 0.87 | 0.85 | 0.85 |
+| ResNet | 32 | 0.85 | 0.85 | 0.85 | 0.85 |
+| ResNet | 64 | 0.83 | 0.83 | 0.83 | 0.82 |
+| Inception v3 | 32 | 0.85 | 0.85 | 0.85 | 0.84 |
+| Inception v3 | 64 | 0.83 | 0.83 | 0.83 | 0.82 |
+| VGG | 32 | 0.84 | 0.84 | 0.84 | 0.84 |
+| VGG | 64 | 0.84 | 0.85 | 0.84 | 0.84 |
+| EfficientNet B0 | 32 | 0.79 | 0.82 | 0.79 | 0.77 |
+| EfficientNet B0 | 64 | 0.71 | 0.71 | 0.71 | 0.66 |
+| ThermSE-ResNet | 32 | 0.95 | 0.96 | 0.95 | 0.95 |
+| ThermSE-ResNet | 64 | 0.97 | 0.97 | 0.97 | 0.97 |
+
+#### Performance Analysis
+
+Our experimental results reveal several significant trends in gender classification performance across different model architectures and batch size configurations on the Tufts dataset. The most striking finding is the exceptional performance of the ThermSE-ResNet model, which substantially outperformed all other tested architectures with accuracy rates of 95% and 97% for batch sizes 32 and 64, respectively. This represents a considerable improvement over the next best performer, AlexNet, which achieved 86% accuracy with batch size 32.
+
+When examining the class-specific metrics, we observe a consistent pattern across nearly all models: higher precision for female classification but higher recall for male classification. This imbalance is particularly evident in models like AlexNet (batch 64), which achieved 94% precision for female classification but only 63% recall, indicating a tendency to misclassify female subjects as male. This gender-based performance disparity may be attributed to the dataset composition, which contains nearly twice as many male samples (215) as female samples (115).
+
+Interestingly, the performance impact of batch size varied across architectures. While ThermSE-ResNet and AlexNet maintained relatively stable performance across batch sizes, EfficientNet B0 exhibited a dramatic performance degradation when the batch size increased from 32 to 64, with accuracy dropping from 79% to 71%. This suggests that EfficientNet's learning dynamics are more sensitive to batch size configurations than other architectures.
+
+The convergence behavior, as illustrated in the training loss and test accuracy graphs, further differentiates ThermSE-ResNet from the other models. ThermSE-ResNet demonstrated remarkably rapid convergence, reaching near-optimal performance within the first two epochs and maintaining a stable performance trajectory thereafter. In contrast, models like ResNet and Inception exhibited more gradual learning curves, requiring additional epochs to approach their performance plateaus.
+
+EfficientNet B0, despite its reputation for efficiency in other computer vision tasks, performed notably poorly on this gender classification task, achieving the lowest accuracy among all tested models. This underperformance may be attributed to the model's design optimizations for general image recognition tasks, which may not translate effectively to the specific feature patterns relevant for gender classification in the Tufts dataset.
+
+The F1 scores, which balance precision and recall considerations, further emphasize ThermSE-ResNet's superior performance, with weighted F1 scores of 0.95 and 0.97 for batch sizes 32 and 64, respectively. This indicates that ThermSE-ResNet not only achieves higher overall accuracy but also maintains a better balance between precision and recall across both gender classes.
+
+In summary, our empirical evaluation on the Tufts dataset demonstrates that the ThermSE-ResNet architecture provides substantial performance advantages for gender classification tasks. Its superior accuracy, balanced class-specific performance, and rapid convergence characteristics make it particularly well-suited for applications where gender classification accuracy is critical. Meanwhile, the consistent gender-based performance disparities observed across most models highlight the importance of addressing potential biases in both model architectures and training methodologies for gender classification tasks.
+
+
     - **4.2.2 Charlotte Dataset**:
       - **Table**: "Table 6: Performance on Charlotte Dataset" (columns as above).
       - **Explanation**: Compare with Tufts, note differences due to channel availability.
@@ -379,10 +468,39 @@ Each model underwent training for 10 epochs, a duration determined through preli
   - **4.4 Proposed Model Performance**:
     - **Table**: "Table 8: Proposed Model vs. Baselines" (columns: Dataset, Model, Accuracy, F1).
     - **Explanation**: Highlight advantages (e.g., channel adapter, SE blocks).
-  - **4.5 Ablation Study**:
-    - Components tested: Channel adapter, SE blocks.
-    - **Table**: "Table 9: Ablation Study Results" (columns: Configuration, Accuracy, F1).
-    - **Explanation**: Justify inclusion of each component based on performance drop without them.
+## 4.5 Ablation Study
+
+The TherSE-ResNet architecture emerged from a deliberate redesign of the standard ResNet50 model to address specific challenges in processing single-channel thermal imagery. Our architectural decisions were validated through a comprehensive ablation study that demonstrated the effectiveness of each component under varying conditions.
+
+### 4.5.1 Experimental Methodology
+The evaluation employed the "tufts" dataset and tracked two primary performance metrics—training loss and test accuracy—across eight epochs. Experiments were conducted with two different batch sizes (64 and 32) to assess the architecture's sensitivity to training conditions.
+
+- **Table**: "Table 9: Ablation Study Results" (columns: Configuration, Accuracy, F1).
+
+### 4.5.2 Rationale for Key Components
+
+#### 4.5.2.1 Squeeze-and-Excitation Blocks
+
+We integrated Squeeze-and-Excitation (SE) blocks throughout the architecture to enhance feature representation quality. Thermal imagery often contains subtle temperature variations with critical diagnostic information that can be overshadowed by stronger signals. SE blocks adaptively recalibrate channel-wise feature responses by explicitly modeling interdependencies between channels, allowing the network to selectively emphasize informative features while suppressing less useful ones. Our ablation study confirms this design choice, showing that SE blocks contribute a 2% improvement in accuracy with larger batch sizes, elevating performance from 90% to 92%.
+
+#### 4.5.2.2 Modified Fully Connected Layer
+
+The standard fully connected layer in ResNet was replaced with a more sophisticated structure incorporating dropout regularization, multiple linear transformations, and a SE block. This modification addresses the challenge of overfitting in thermal image classification, where training datasets are often limited in size and diversity compared to RGB datasets. The modified FC layer introduces controlled regularization through dual dropout layers (rates of 0.5 and 0.3) and leverages intermediate dimensionality adjustments to create a more generalizable feature representation. The ablation study validates this approach for larger batch sizes, where the modified FC layer outperforms the standard implementation by approximately 2% in accuracy.
+
+#### 4.5.2.3 Input Convolution Layer
+
+To handle the dimensionality mismatch between single-channel thermal inputs and the three-channel expectation of standard ResNet architectures, we incorporated an input convolution layer that projects the thermal data into a three-channel representation. While simple channel replication could serve as an alternative, the dedicated convolution layer provides the network with learnable parameters to transform the input representation in a data-driven manner. Though our ablation study shows comparable performance between this approach and simple channel replication, the convolution layer maintains architectural consistency and offers potentially greater flexibility for diverse thermal imaging scenarios.
+
+#### 4.5.2.4 Batch Size Sensitivity and Architectural Adaptations
+
+Our ablation study revealed insights regarding the sensitivity of TherSE-ResNet to batch size variations. This sensitivity stems from the interplay between regularization intensity (particularly in the modified FC layer) and the statistical properties of gradient estimates at different batch sizes. With larger batches (64), gradient estimates are more stable, allowing the additional regularization from dropout layers to effectively prevent overfitting without impeding learning. Conversely, smaller batch (32) introduce inherent noise in gradient estimates, which, when combined with strong explicit regularization, can hinder convergence.
+
+This finding justifies a flexible implementation approach where the architecture adapts based on anticipated deployment conditions. For systems with sufficient computational resources to support larger batch sizes, the complete TherSE-ResNet with SE blocks and the modified FC layer maximizes performance. For resource-constrained environments requiring smaller batches, a variant with a standard FC layer proves more appropriate, achieving up to 95% accuracy compared to 90-92% with the modified FC.
+
+#### 4.5.2.5 Decision on Component Selection
+
+For applications requiring maximum accuracy and having access to substantial computational resources, the full architecture with all components delivers optimal performance. For deployments on edge devices with memory or processing limitations, simpler variants can be selected with minimal performance degradation. The ablation study demonstrates that even the simplest configuration maintains performance well above 90%, justifying our design philosophy of maintaining robust performance across diverse implementation scenarios.
+
   - **4.6 Visualizations**:
     - **Diagram**: "Figure 4: Confusion Matrices" (show for proposed model on each dataset).
     - **Diagram**: "Figure 5: ROC Curves" (compare proposed model vs. best baseline).
