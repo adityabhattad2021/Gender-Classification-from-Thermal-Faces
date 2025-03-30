@@ -35,13 +35,14 @@ These studies highlight the growing interest and potential of using deep learnin
 
 The Tufts University Thermal Face Dataset represents a comprehensive multimodal collection comprising over 10,000 images across various modalities acquired from a diverse cohort of 113 participants (74 females, 39 males). For our research, we specifically utilized the thermal subset containing approximately 1,400 images. The age distribution spans from 4 to 70 years, with subjects originating from more than 15 countries, thus providing substantial demographic variability. Image acquisition was conducted using a FLIR Vue Pro thermal camera under controlled indoor environmental conditions. Participants were positioned at a standardized distance from the imaging apparatus to maintain consistency. For our investigation, we specifically utilized two subsets: TD_IR_E (Emotion), which contains images depicting five distinct facial expressions (neutral, smile, eyes closed, shocked, and with sunglasses), and TD_IR_A (Around), which encompasses images captured from nine different camera positions arranged in a semicircular configuration around each participant. A significant challenge encountered with this dataset was the pronounced gender imbalance, with approximately 30.32% female and 69.68% male images. To mitigate this imbalance and enhance model robustness, we implemented targeted data augmentation techniques specifically for the underrepresented female class, including controlled geometric transformations and intensity adjustments while preserving critical thermal signature characteristics.
 
-(Example Images from tufts dataset)
+![tufts_grid](https://github.com/user-attachments/assets/3b896a26-95b9-4c6b-b02a-f22fed2de0a6)
+
 
 #### 3.1.2 Charlotte-ThermalFace Dataset
 
 The Charlotte-ThermalFace Dataset comprises approximately 10,364 thermal facial images from 10 subjects, collected under varying conditions (e.g., distance, head position, temperature). This dataset was not specifically created for gender detection tasks, but we repurposed it for our gender classification research. Based on image characteristics, we infer that data acquisition likely employed a FLIR-based thermal imaging system. In contrast to the Tufts collection, the Charlotte dataset exhibits near-perfect gender balance with approximately 50.10% female and 49.90% male. This balanced distribution provided an advantageous counterpoint to the gender imbalance present in the Tufts dataset.
 
-(Example Images from charlotte dataset)
+![charlotte_grid](https://github.com/user-attachments/assets/3c6c179a-e9fe-43d4-a16d-ca780c4d42c9)
 
 #### 3.1.3 Combined Dataset
 
@@ -68,7 +69,8 @@ We structured our datasets according to a standardized hierarchical organization
 
 For the Tufts dataset, we addressed the inherent gender imbalance during partitioning, ensuring that the disproportionate male-to-female ratio was consistently reflected in both training and testing subsets. In the Charlotte dataset, the near-perfect gender balance was preserved throughout the partition process. For the combined dataset, we implemented balanced sampling to achieve gender parity while maintaining subject-level separation between training and testing sets.
 
-**Figure 1: Subject-Disjoint Dataset Partitioning Schema** - A diagram showing the hierarchical organization and separation of subjects by gender across train/test splits.
+Figure 1: Subject-Disjoint Dataset Partitioning Schema - A diagram showing the hierarchical organization and separation of subjects by gender across train/test splits.
+![dataset_partitioning_schema](https://github.com/user-attachments/assets/06a2b046-8513-4092-9345-ad485141a975)
 
 
 ### 3.2.2 Image Normalization and Standardization
@@ -107,6 +109,8 @@ The final augmented training sets demonstrated substantially enhanced diversity 
 This carefully engineered preprocessing and augmentation pipeline provided our models with high-quality, balanced training data while preserving the critical thermal signatures necessary for accurate gender classification in thermal facial imagery.
 
 **Figure 2: Thermal Image Augmentation Examples** - A grid showing original thermal facial images alongside various augmented versions (horizontal flip, rotation, contrast adjustment, etc.)
+![new_thermal_augmentation_combined_examplesaa](https://github.com/user-attachments/assets/8842aedb-3c13-432e-b7af-baa0b1c6c789)
+
 
 **Table 3: Final Experimental Dataset Configurations**
 | Experiment | Training Set | Testing Set | Total Training Images | Total Testing Images |
@@ -133,7 +137,8 @@ It is worth noting that the final architecture emerged from a rigorous iterative
 
 The proposed architecture enhances the standard ResNet-50 by integrating three key modifications: a Channel Input Adapter to handle single-channel inputs, Squeeze-and-Excitation (SE) blocks to improve feature representation, and a redesigned classifier head to optimize classification performance. Each component is meticulously crafted to align with the implementation in the provided code, ensuring consistency between the theoretical design and practical execution.
 
-- **Figure 4**: "Overall Architecture of TH-SE-ResNet" - A comprehensive diagram showing the complete model architecture with all components connected, highlighting the modifications to the standard ResNet-50.
+- **Figure 4**: Overall Architecture of TH-SE-ResNet - A comprehensive diagram showing the complete model architecture with all components connected, highlighting the modifications to the standard ResNet-50.
+![Architecture](https://github.com/user-attachments/assets/91b98f31-c02b-4c24-a38f-013f90641ae7)
 
 ### 3.3.2 Channel Input Adapter
 
@@ -160,8 +165,6 @@ x_2 = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 3}(x_1)\right)\ri
 Here, \(\text{Conv}_{k \times k, c}\) represents a convolutional operation with a kernel size of \( k \times k \) and \( c \) output channels, \(\text{BN}\) denotes batch normalization, and \(\text{ReLU}(z) = \max(0, z)\) is the rectified linear unit activation function.
 
 The learnable nature of this adapter allows the network to adaptively map the single-channel input to a three-channel space, potentially capturing richer and more relevant features than a static replication method. By employing convolutional layers, the adapter can learn spatially varying transformations, which is particularly advantageous for gender classification in thermal images, where local patterns—such as facial heat distributions or temperature variations—are discriminative. This design enhances the model’s compatibility with pretrained weights while optimizing its ability to process domain-specific data.
-
-**Figure 5**: "Channel Input Adapter Architecture" - A detailed diagram showing the transformation from single-channel input to three-channel output, with the convolutional layers, batch normalization, and activation functions clearly labeled.
 
 ### 3.3.3 Squeeze and Excitation (SE) Blocks
 
@@ -197,8 +200,6 @@ Here, \( W_1 \in \mathbb{R}^{\frac{C}{r} \times C} \) reduces the dimensionality
 - For fully-connected layers: \( \tilde{x}_b(c) = s_c \cdot x_b(c) \)
 
 This recalibration enhances the emphasis on channels deemed most relevant by the attention mechanism.
-
-**Figure 6**: "Squeeze and Excitation Mechanism" - Visual representation of the squeeze and excitation operations, with mathematical formulations.
 
 We implemented SE blocks that are capable of handling both convolutional feature maps (4D tensors) and fully-connected layers (2D tensors), making the architecture more flexible. For convolutional layers, the SE blocks apply 2D adaptive average pooling before computing attention weights, while for fully-connected layers, they utilize 1D pooling. This adaptive approach ensures that the attention mechanism works effectively throughout the network.
 
@@ -255,7 +256,7 @@ y = W_2 x_4 + b_2
 
 The incorporation of SE blocks enhances the network’s sensitivity to informative features, a crucial capability in gender classification for thermal images, where subtle differences in facial heat distribution can be discriminative. The adaptive nature of the attention mechanism allows the model to dynamically adjust its focus, improving both performance and robustness across diverse datasets.
 
-**Figure 7** - Visual comparison between standard ResNet and your TH-SE-ResNet highlighting the key differences.
+**Figure 5** - Visual comparison between standard ResNet and your TH-SE-ResNet highlighting the key differences.
 
 ### 3.3.4 Unified Equation
 
@@ -382,7 +383,7 @@ The swish activation function ($x \cdot \text{sigmoid}(x)$) used throughout Effi
 | ResNet50 | 50 | 25.6 | 224×224 | Bottleneck residual blocks | Deep thermal feature hierarchies with gradient preservation |
 | EfficientNet-B0 | 82 | 5.3 | 224×224 | MBConv with SE, Compound scaling | Adaptive attention to gender-discriminative thermal channels |
 
-**Figure 8: Architectural Diagrams** – Detailed schematic representations of each baseline model's layer configuration, highlighting specific components relevant to thermal feature extraction.
+**Figure 6: Architectural Diagrams** – Detailed schematic representations of each baseline model's layer configuration, highlighting specific components relevant to thermal feature extraction.
 
 ### 3.4.2 Input Adaptation and Training Protocol
 
@@ -578,29 +579,38 @@ To supplement the quantitative performance metrics detailed earlier, a visual ex
 
 The learning dynamics of each model were captured by plotting the training loss and the corresponding test accuracy achieved at the conclusion of each of the 10 training epochs. These plots serve as a visual narrative of the learning process, illustrating how adeptly each architecture assimilated information from the training data while simultaneously generalizing to previously unseen examples from the test set. Figures illustrating these dynamics are presented below for the various dataset configurations and batch sizes.
 
-**(Placeholder: Figure 9: Training/Accuracy Curves - Combined Dataset, Batch Size 64)**
-*(Corresponding plot image provided by user)*
+Figure 7: Training/Accuracy Curves - Combined Dataset, Batch Size 64)
+![comparison_combined_batch64](https://github.com/user-attachments/assets/0bebbace-6a57-49a7-bf72-f584041444f7)
 
-**(Placeholder: Figure 10: Training/Accuracy Curves - Combined Dataset, Batch Size 32)**
-*(Corresponding plot image provided by user)*
 
-**(Placeholder: Figure 11: Training/Accuracy Curves - Charlotte Dataset, Batch Size 64)**
-*(Corresponding plot image provided by user)*
+Figure 8: Training/Accuracy Curves - Combined Dataset, Batch Size 32
+![comparison_combined_batch32](https://github.com/user-attachments/assets/dd3fcbf0-bb17-4827-afe5-be9338b8fb1c)
 
-**(Placeholder: Figure 12: Training/Accuracy Curves - Charlotte Dataset, Batch Size 32)**
-*(Corresponding plot image provided by user)*
+Figure 9: Training/Accuracy Curves - Charlotte Dataset, Batch Size 64
+![comparison_charlotte_batch64 (1)](https://github.com/user-attachments/assets/f670bc3e-5efe-48df-9f36-0eb4eedf9f4b)
 
-**(Placeholder: Figure 13: Training/Accuracy Curves - Tufts Dataset, Batch Size 64)**
-*(Corresponding plot image provided by user)*
+Figure 10: Training/Accuracy Curves - Charlotte Dataset, Batch Size 32
+![comparison_charlotte_batch32 (1)](https://github.com/user-attachments/assets/170b57aa-dbf7-433f-9ec8-d25d19d1a7d8)
 
-**(Placeholder: Figure 14: Training/Accuracy Curves - Tufts Dataset, Batch Size 32)**
-*(Corresponding plot image provided by user)*
+Figure 11: Training/Accuracy Curves - Tufts Dataset, Batch Size 64
+![comparison_tufts_batch64 (1)](https://github.com/user-attachments/assets/da3ff3df-9f40-4353-979b-3c3d2b3337e5)
+
+Figure 12: Training/Accuracy Curves - Tufts Dataset, Batch Size 32
+![comparison_tufts_batch32 (1)](https://github.com/user-attachments/assets/72f75044-de5d-4775-8e10-c50be50d50a3)
+
 
 Observing these graphical representations (Figures 9-14) reveals distinct patterns in model behavior across the different experimental setups. A consistent theme is the notably efficient learning demonstrated by the proposed TherSE-ResNet architecture (blue line in all plots). Compared to the baseline models, TherSE-ResNet consistently displayed a steeper initial decline in training loss and a faster ascent to a high and stable test accuracy plateau, often achieving near-optimal performance within just the first four to five epochs. This rapid convergence is evident across all datasets – Combined (Figures 9, 10), Charlotte (Figures 11, 12), and Tufts (Figures 13, 14).
 
 In contrast, baseline architectures like the standard ResNet50 (red line) or EfficientNet-B0 (purple line) generally exhibited slower convergence and often reached lower final accuracy levels. For example, in the Combined dataset plots (Figures 9, 10), TherSE-ResNet clearly separates from the pack early on, maintaining a significant accuracy advantage. The plots for the Charlotte dataset (Figures 11, 12) reflect the overall lower performance reported in Table 6, with accuracy curves plateauing at lower values for all models, although TherSE-ResNet still maintains a lead. Notably, the EfficientNet curve sometimes shows more fluctuation or even degradation with the larger batch size (compare Figure 9 vs 10, or Figure 11 vs 12), visually confirming its sensitivity. The Tufts dataset plots (Figures 13, 14) showcase the highest overall performance, with TherSE-ResNet reaching accuracies above 95% very quickly, while other models lag behind more significantly. These curves visually reinforce the quantitative results, highlighting TherSE-ResNet's superior learning efficiency and generalization on these thermal datasets.
 
 For a more granular understanding of the classification results, particularly the types of errors made by the top-performing TherSE-ResNet model, confusion matrices are presented for each dataset configuration and batch size. These matrices provide a structured summary of prediction outcomes against the true labels.
+
+![confusion_matrix](https://github.com/user-attachments/assets/954c9da1-26e6-4769-8cdb-f5ae44d20e46)
+![confusion_matrix (1)](https://github.com/user-attachments/assets/ea724407-0fc2-4b35-8b79-91fad65d5aa0)
+![confusion_matrix (2)](https://github.com/user-attachments/assets/4eaea0b1-e60f-48be-8118-fe48898b500e)
+![confusion_matrix (3)](https://github.com/user-attachments/assets/4bd11d6a-12a7-4cd6-a8a2-de03d54bbbc9)
+![confusion_matrix (4)](https://github.com/user-attachments/assets/1d5cb0fa-7877-4910-825c-9f8165224784)
+![confusion_matrix (5)](https://github.com/user-attachments/assets/4a7b074e-eb05-478a-87eb-6fb480f7cdac)
 
 Each confusion matrix (visualized in Figure 15) tabulates the performance by showing the counts of correct predictions along the main diagonal (True Positives for each class, e.g., female predicted as female, male predicted as male) and misclassifications in the off-diagonal cells (False Positives and False Negatives). Analyzing these matrices allows for a direct comparison of error patterns across conditions.
 
@@ -610,8 +620,8 @@ Each confusion matrix (visualized in Figure 15) tabulates the performance by sho
 
 By examining these matrices, we gain insight into not just the overall accuracy but also the specific confusion patterns between the gender classes under different data conditions and training configurations.
 
-**(Placeholder: Sample Classification Analysis)**
-*(A qualitative analysis examining specific images that were correctly and incorrectly classified by TherSE-ResNet, particularly from the combined dataset test set, could provide further insights. For instance, one might observe that misclassifications occur more often with non-frontal poses, images affected by glare or significant temperature variations, or individuals whose thermal patterns appear less distinct according to the learned features. This analysis could help pinpoint specific weaknesses and guide future improvements in data collection or model design. Specific examples would be inserted here if available.)*
+Figure 14: Sample Classification Analysis
+![combined_prediction_examples](https://github.com/user-attachments/assets/ce743113-a418-43cd-a84b-ffe24a85a7d2)
 
 In summary, these visualizations—the learning curves charting the training progress and the confusion matrices detailing the classification outcomes—collectively offer a richer, more nuanced perspective on model behavior than numerical metrics alone, aiding in the interpretation of performance differences and guiding further analysis.
 
