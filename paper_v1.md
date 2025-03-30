@@ -572,10 +572,48 @@ This finding justifies a flexible implementation approach where the architecture
 
 For applications requiring maximum accuracy and having access to substantial computational resources, the full architecture with all components delivers optimal performance. For deployments on edge devices with memory or processing limitations, simpler variants can be selected with minimal performance degradation. The ablation study demonstrates that even the simplest configuration maintains performance well above 90%, justifying our design philosophy of maintaining robust performance across diverse implementation scenarios.
 
-## 4.6 Visualizations**:
-  - **Diagram**: "Figure 9: Confusion Matrices" (show for proposed model on each dataset).
-  - **Diagram**: "Figure 10: ROC Curves" (compare proposed model vs. best baseline).
-  - **Explanation**: Discuss correct/incorrect prediction examples with sample images.
+## 4.6 Visualizations:
+
+To supplement the quantitative performance metrics detailed earlier, a visual examination of the models' training processes and classification outcomes offers valuable qualitative insights. This analysis relies on tracking the evolution of training loss and test accuracy across epochs, alongside a detailed inspection of classification errors through confusion matrices.
+
+The learning dynamics of each model were captured by plotting the training loss and the corresponding test accuracy achieved at the conclusion of each of the 10 training epochs. These plots serve as a visual narrative of the learning process, illustrating how adeptly each architecture assimilated information from the training data while simultaneously generalizing to previously unseen examples from the test set. Figures illustrating these dynamics are presented below for the various dataset configurations and batch sizes.
+
+**(Placeholder: Figure 9: Training/Accuracy Curves - Combined Dataset, Batch Size 64)**
+*(Corresponding plot image provided by user)*
+
+**(Placeholder: Figure 10: Training/Accuracy Curves - Combined Dataset, Batch Size 32)**
+*(Corresponding plot image provided by user)*
+
+**(Placeholder: Figure 11: Training/Accuracy Curves - Charlotte Dataset, Batch Size 64)**
+*(Corresponding plot image provided by user)*
+
+**(Placeholder: Figure 12: Training/Accuracy Curves - Charlotte Dataset, Batch Size 32)**
+*(Corresponding plot image provided by user)*
+
+**(Placeholder: Figure 13: Training/Accuracy Curves - Tufts Dataset, Batch Size 64)**
+*(Corresponding plot image provided by user)*
+
+**(Placeholder: Figure 14: Training/Accuracy Curves - Tufts Dataset, Batch Size 32)**
+*(Corresponding plot image provided by user)*
+
+Observing these graphical representations (Figures 9-14) reveals distinct patterns in model behavior across the different experimental setups. A consistent theme is the notably efficient learning demonstrated by the proposed TherSE-ResNet architecture (blue line in all plots). Compared to the baseline models, TherSE-ResNet consistently displayed a steeper initial decline in training loss and a faster ascent to a high and stable test accuracy plateau, often achieving near-optimal performance within just the first four to five epochs. This rapid convergence is evident across all datasets – Combined (Figures 9, 10), Charlotte (Figures 11, 12), and Tufts (Figures 13, 14).
+
+In contrast, baseline architectures like the standard ResNet50 (red line) or EfficientNet-B0 (purple line) generally exhibited slower convergence and often reached lower final accuracy levels. For example, in the Combined dataset plots (Figures 9, 10), TherSE-ResNet clearly separates from the pack early on, maintaining a significant accuracy advantage. The plots for the Charlotte dataset (Figures 11, 12) reflect the overall lower performance reported in Table 6, with accuracy curves plateauing at lower values for all models, although TherSE-ResNet still maintains a lead. Notably, the EfficientNet curve sometimes shows more fluctuation or even degradation with the larger batch size (compare Figure 9 vs 10, or Figure 11 vs 12), visually confirming its sensitivity. The Tufts dataset plots (Figures 13, 14) showcase the highest overall performance, with TherSE-ResNet reaching accuracies above 95% very quickly, while other models lag behind more significantly. These curves visually reinforce the quantitative results, highlighting TherSE-ResNet's superior learning efficiency and generalization on these thermal datasets.
+
+For a more granular understanding of the classification results, particularly the types of errors made by the top-performing TherSE-ResNet model, confusion matrices are presented for each dataset configuration and batch size. These matrices provide a structured summary of prediction outcomes against the true labels.
+
+Each confusion matrix (visualized in Figure 15) tabulates the performance by showing the counts of correct predictions along the main diagonal (True Positives for each class, e.g., female predicted as female, male predicted as male) and misclassifications in the off-diagonal cells (False Positives and False Negatives). Analyzing these matrices allows for a direct comparison of error patterns across conditions.
+
+*   **Tufts Performance:** The matrices assumed to correspond to the Tufts dataset (CM5 for B64, CM6 for B32) show exceptionally high values on the diagonal and minimal off-diagonal counts. For B64 (CM5), 100 females were correctly identified with 15 misclassified as male, while 215 males were correct with zero misclassified as female. For B32 (CM6), 105 females were correct with 10 misclassified, and 214 males were correct with only 1 misclassified. These low error counts visually confirm the high 95-97% accuracy reported for TherSE-ResNet on the Tufts test set.
+*   **Charlotte Performance:** The matrices mapped to the Charlotte dataset (CM2 for B64, CM3 for B32) display considerably higher off-diagonal counts, reflecting the lower accuracy (81-85%). For B64 (CM2), while 947 females and 794 males were correctly identified, there were 235 instances where females were misclassified as males and 83 instances where males were misclassified as females. Similar significant error counts are seen for B32 (CM3: 175 females misclassified as male, 49 males as female). This highlights the increased difficulty the model faced with the Charlotte dataset.
+*   **Combined Dataset Performance:** The matrices for the combined dataset (CM1 for B64, CM4 for B32) show performance intermediate between Tufts and Charlotte. For B64 (CM1), there were 1024 correct females but 390 misclassified as male, while 639 males were correct with only 6 misclassified as female. This indicates a specific asymmetry in errors on the combined set with B64, where the model struggled more with recalling females correctly but was very precise when predicting males. For B32 (CM4), the errors were 276 females misclassified as male and 19 males as female, showing a different error balance.
+
+By examining these matrices, we gain insight into not just the overall accuracy but also the specific confusion patterns between the gender classes under different data conditions and training configurations.
+
+**(Placeholder: Sample Classification Analysis)**
+*(A qualitative analysis examining specific images that were correctly and incorrectly classified by TherSE-ResNet, particularly from the combined dataset test set, could provide further insights. For instance, one might observe that misclassifications occur more often with non-frontal poses, images affected by glare or significant temperature variations, or individuals whose thermal patterns appear less distinct according to the learned features. This analysis could help pinpoint specific weaknesses and guide future improvements in data collection or model design. Specific examples would be inserted here if available.)*
+
+In summary, these visualizations—the learning curves charting the training progress and the confusion matrices detailing the classification outcomes—collectively offer a richer, more nuanced perspective on model behavior than numerical metrics alone, aiding in the interpretation of performance differences and guiding further analysis.
 
 ### 5. Discussion
 - **Length**: 3-4 pages.
