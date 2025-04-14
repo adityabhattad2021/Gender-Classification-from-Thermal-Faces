@@ -611,11 +611,12 @@ The F1 scores further emphasize the superior performance balance of TH-SE-ResNet
 
 The learning curves for the Charlotte dataset illustrate these trends.
 
-[todo]
+![comparison_charlotte_batch32](https://github.com/user-attachments/assets/9d1a70c4-06a7-4e8c-a562-c95a28d6b50d)
+]
 
 Figure 10: Training Loss and Test Accuracy Curves on Charlotte Dataset (Batch Size 64)
 
-[todo]
+![comparison_charlotte_batch64](https://github.com/user-attachments/assets/1006ff13-0494-494a-9ecd-62572652760f)
 
 Figure 11: Training Loss and Test Accuracy Curves on Charlotte Dataset (Batch Size 32)
 
