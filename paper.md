@@ -155,14 +155,14 @@ The Channel Input Adapter is implemented as a sequence of convolutional layers t
 
 - **Subsequent Convolutional Block**: The intermediate feature map \( x_1 \) is fed into a second 3×3 convolutional layer, this time reducing the channel dimension to 3, again with padding of 1. Batch normalization and ReLU activation are applied subsequently, yielding the final output \( x_2 \in \mathbb{R}^{3 \times H \times W} \), which matches the input requirements of the ResNet backbone.
 
-Mathematically, the transformation can be expressed as:
+The transformation can be expressed mathematically as shown in Equations (1) and (2), where the initial convolutional block produces intermediate features that are further refined by the second block.
 
 \[
-x_1 = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 32}(x)\right)\right)
+x_1 = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 32}(x)\right)\right) \tag{1}
 \]
 
 \[
-x_2 = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 3}(x_1)\right)\right)
+x_2 = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 3}(x_1)\right)\right) \tag{2}
 \]
 
 Here, \(\text{Conv}_{k \times k, c}\) represents a convolutional operation with a kernel size of \( k \times k \) and \( c \) output channels, \(\text{BN}\) denotes batch normalization, and \(\text{ReLU}(z) = \max(0, z)\) is the rectified linear unit activation function.
@@ -193,13 +193,13 @@ The SE block operates through a two-step process: squeeze and excitation.
 - **Squeeze Operation**: This step aggregates global spatial information into a channel descriptor. For convolutional feature maps \( x \in \mathbb{R}^{C \times H \times W} \), where \( C \) is the number of channels, global average pooling is applied:
 
 \[
-z_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} x_c(i, j), \quad c = 1, 2, \ldots, C
+z_c = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} x_c(i, j), \quad c = 1, 2, \ldots, C \tag{3}
 \]
 
 For fully-connected layers with input \( x \in \mathbb{R}^{B \times C} \), where \( B \) is the batch size, a 1D adaptive average pooling is used:
 
 \[
-z_c = \frac{1}{B} \sum_{b=1}^{B} x_b(c)
+z_c = \frac{1}{B} \sum_{b=1}^{B} x_b(c) \tag{4}
 \]
 
 The result is a channel descriptor \( z \in \mathbb{R}^{C} \) that encapsulates the global context of each channel.
@@ -207,8 +207,10 @@ The result is a channel descriptor \( z \in \mathbb{R}^{C} \) that encapsulates 
 - **Excitation Operation**: The channel descriptor \( z \) is processed through a bottleneck structure comprising two fully-connected layers:
 
 \[
-s = \sigma\left(W_2 \cdot \delta\left(W_1 \cdot z\right)\right)
+s = \sigma\left(W_2 \cdot \delta\left(W_1 \cdot z\right)\right) \tag{5}
 \]
+
+The global spatial information is aggregated into a channel descriptor as defined in Equation (3) for convolutional feature maps and Equation (4) for fully-connected layers. The channel-wise attention weights are then computed using Equation (5).
 
 Here, \( W_1 \in \mathbb{R}^{\frac{C}{r} \times C} \) reduces the dimensionality with a reduction ratio \( r = 16 \), \( \delta(z) = \text{ReLU}(z) \) introduces non-linearity, \( W_2 \in \mathbb{R}^{C \times \frac{C}{r}} \) restores the original dimensionality, and \( \sigma(z) = \frac{1}{1 + e^{-z}} \) is the sigmoid activation function. The output \( s \in \mathbb{R}^{C} \) represents channel-wise attention weights ranging from 0 to 1.
 
@@ -257,13 +259,7 @@ The classifier head processes the 2048-dimensional feature vector obtained from 
 
 - **First Dropout Layer**: A dropout operation with a probability of 0.5 is applied to the input \( x \in \mathbb{R}^{2048} \), randomly setting half of the features to zero during training to prevent neuron co-adaptation.
 
-- **Dimensionality Reduction**: A fully-connected layer reduces the dimensionality from 2048 to 512, followed by a ReLU activation:
-
-\[
-x_2 = \text{ReLU}(W_1 x_1 + b_1)
-\]
-
-where \( W_1 \in \mathbb{R}^{512 \times 2048} \) and \( b_1 \in \mathbb{R}^{512} \) are learnable parameters.
+- **Dimensionality Reduction**: A fully-connected layer reduces the dimensionality from 2048 to 512, followed by a ReLU activation (as shown later in Equation (7)), where \( W_1 \in \mathbb{R}^{512 \times 2048} \) and \( b_1 \in \mathbb{R}^{512} \) are learnable parameters.
 
 - **SE Block**: An SE block recalibrates the 512-dimensional feature vector, applying the squeeze and excitation operations described earlier to emphasize discriminative features.
 
@@ -277,26 +273,26 @@ y = W_2 x_4 + b_2
 
 where \( W_2 \in \mathbb{R}^{\text{num\_classes} \times 512} \) and \( b_2 \in \mathbb{R}^{\text{num\_classes}} \) produce the classification logits.
 
-The full transformation is:
+The complete transformation sequence is defined in Equations (6) through (10).
 
 \[
-x_1 = \text{Dropout}_{0.5}(x)
+x_1 = \text{Dropout}_{0.5}(x) \tag{6}
 \]
 
 \[
-x_2 = \text{ReLU}(W_1 x_1 + b_1)
+x_2 = \text{ReLU}(W_1 x_1 + b_1) \tag{7}
 \]
 
 \[
-x_3 = \text{SEBlock}(x_2)
+x_3 = \text{SEBlock}(x_2) \tag{8}
 \]
 
 \[
-x_4 = \text{Dropout}_{0.3}(x_3)
+x_4 = \text{Dropout}_{0.3}(x_3) \tag{9}
 \]
 
 \[
-y = W_2 x_4 + b_2
+y = W_2 x_4 + b_2 \tag{10}
 \]
 
 
@@ -308,7 +304,7 @@ The incorporation of SE blocks enhances the network’s sensitivity to informati
 The complete TH-SE-ResNet architecture can be expressed as a composition of three key components: the Channel Input Adapter, the ResNet backbone with SE blocks, and the modified classifier head. This composition is mathematically formulated as:
 
 \[
-f_{\text{TH-SE-ResNet}}(x) = g_{\text{FC}} \circ f_{\text{ResNet+SE}} \circ h_{\text{CIA}}(x)
+f_{\text{TH-SE-ResNet}}(x) = g_{\text{FC}} \circ f_{\text{ResNet+SE}} \circ h_{\text{CIA}}(x) \tag{11}
 \]
 
 where \( x \in \mathbb{R}^{1 \times H \times W} \) represents the single-channel thermal input image, \( h_{\text{CIA}} \) is the Channel Input Adapter, \( f_{\text{ResNet+SE}} \) is the ResNet backbone enhanced with SE blocks, and \( g_{\text{FC}} \) is the modified classifier head.
@@ -316,7 +312,7 @@ where \( x \in \mathbb{R}^{1 \times H \times W} \) represents the single-channel
 The Channel Input Adapter transforms the single-channel input into a three-channel representation through a sequence of convolutional operations:
 
 \[
-h_{\text{CIA}}(x) = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 3}\left(\text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 32}(x)\right)\right)\right)\right)\right)
+h_{\text{CIA}}(x) = \text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 3}\left(\text{ReLU}\left(\text{BN}\left(\text{Conv}_{3 \times 3, 32}(x)\right)\right)\right)\right)\right) \tag{12}
 \]
 
 The output of the Channel Input Adapter, \( h_{\text{CIA}}(x) \in \mathbb{R}^{3 \times H \times W} \), is then processed by the ResNet backbone with integrated SE blocks.
@@ -324,7 +320,7 @@ The output of the Channel Input Adapter, \( h_{\text{CIA}}(x) \in \mathbb{R}^{3 
 The backbone processes the input through a series of layers:
 
 \[
-f_{\text{ResNet+SE}}(x) = L_4(L_3(L_2(L_1(\text{Pool}(\text{ReLU}(\text{BN}(\text{Conv}_{7 \times 7, 64}(x))))))))
+f_{\text{ResNet+SE}}(x) = L_4(L_3(L_2(L_1(\text{Pool}(\text{ReLU}(\text{BN}(\text{Conv}_{7 \times 7, 64}(x)))))))) \tag{13}
 \]
 
 where each layer \( L_i \) consists of multiple bottleneck modules with SE blocks added to their outputs.
@@ -332,18 +328,21 @@ where each layer \( L_i \) consists of multiple bottleneck modules with SE block
 The SE block operates on feature maps using the following formula:
 
 \[
-\text{SE}(F) = F \cdot \sigma(W_2(\delta(W_1(\text{GAP}(F)))))
+\text{SE}(F) = F \cdot \sigma(W_2(\delta(W_1(\text{GAP}(F))))) \tag{14}
 \]
+
 
 where \( F \) represents the feature maps, GAP is global average pooling (adaptive to input dimensions), \( \delta \) is the ReLU activation, \( \sigma \) is the sigmoid activation, and \( \cdot \) denotes channel-wise multiplication.
 
 The modified classifier head processes the extracted features through:
 
 \[
-g_{\text{FC}}(x) = W_2(D_{0.3}(\text{SE}(\text{ReLU}(W_1(D_{0.5}(x))))))
+g_{\text{FC}}(x) = W_2(D_{0.3}(\text{SE}(\text{ReLU}(W_1(D_{0.5}(x)))))) \tag{15}
 \]
 
 where \( W_1 \in \mathbb{R}^{512 \times 2048} \) and \( W_2 \in \mathbb{R}^{\text{num\_classes} \times 512} \) are learnable weight matrices, and \( D_p \) represents dropout with probability \( p \).
+
+The complete TH-SE-ResNet architecture can be expressed as a composition shown in Equation (11), where the Channel Input Adapter defined by Equation (12) feeds into the ResNet backbone with SE blocks expressed in Equation (13). The SE block operation is formalized in Equation (14), and the classifier head transformation is given by Equation (15).
 
 This unified mathematical formulation captures the key architectural components of our TH-SE-ResNet, highlighting the integration of the Channel Input Adapter for domain-specific processing, the SE blocks for adaptive feature recalibration, and the enhanced classifier head for optimized performance in thermal image classification.
 
