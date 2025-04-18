@@ -752,7 +752,7 @@ For applications requiring maximum accuracy and having access to substantial com
 
 ## 5. Discussion and Future Scope
 
-Discussion and Future Scope
+
 Thermal imaging has increasingly been recognized as a powerful modality for biometric analysis, especially in scenarios where visible spectrum imaging fails—such as low-light or privacy-sensitive environments. This paper explored the effectiveness of deep CNN models and proposed a novel architecture, TH-SE-ResNet, for gender classification from thermal facial images. By evaluating several existing models (AlexNet, VGG16, InceptionV3, ResNet50, EfficientNet-B0) on two diverse datasets (Tufts and Charlotte), and by introducing an architecture with Squeeze-and-Excitation blocks and channel adapters, we bridged multiple gaps identified in the existing literature.
 
 Many previous works, including Jalil et al. (2023) and Chatterjee & Zaman (2023), have demonstrated the potential of CNNs in thermal gender classification. However, their models often faced dataset-specific limitations. Jalil’s Cloud_Res, while optimized for the cloud, used offline datasets and did not account for varying channel structures across datasets. Our work addresses this through adaptive input layers that process different thermal imaging formats (e.g., grayscale, RGB, IR-RGB).
