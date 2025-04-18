@@ -800,3 +800,34 @@ Application to Broader Biometric Tasks
 
 
  The field of thermal gender classification is evolving from handcrafted feature engineering to intelligent, context-aware, and scalable deep learning systems. Our TH-SE-ResNet model contributes to this evolution by combining robustness, efficiency, and adaptability. Yet, the future lies in creating holistic systems that integrate richer datasets, adapt across domains, and are deployed in the wild. Interdisciplinary approaches—blending machine learning, thermal physics, hardware design, and ethics—will define the next frontier in thermal-based biometric analysis.
+
+## 6. Summary
+
+Gender classification is a fundamental task in computer vision, crucial for applications ranging from driver monitoring and video surveillance to human-computer interaction and retail analytics. While traditional systems rely on visible spectrum facial images, their performance deteriorates under variable lighting, shadows, occlusions, and other real-world challenges. This paper addresses these limitations by leveraging thermal facial imaging, which captures heat-based physiological patterns and remains robust in low-light and visually complex environments.
+
+Although thermal imaging offers clear benefits, its use in gender classification poses challenges due to lower resolution and a lack of detailed facial features compared to RGB images. To address this, the paper explores the use of deep learning, particularly Convolutional Neural Networks (CNNs), for learning meaningful features directly from thermal images.
+
+We conduct an extensive evaluation of state-of-the-art CNN architectures—including AlexNet, VGG, InceptionV3, ResNet50, and EfficientNet-B0—on two publicly available thermal datasets: Tufts University Thermal Face and Charlotte-ThermalFace. Additionally, a combined dataset is created to enhance generalizability and test cross-domain performance. Since the datasets differ in channel configuration and class distribution, we introduce preprocessing pipelines, augmentation techniques, and class-balancing strategies to ensure fair and effective training.
+
+To further push the performance boundary, we propose a novel architecture, TH-SE-ResNet, a modified version of ResNet-50 designed specifically for thermal image-based gender classification. Key enhancements include:
+
+A Channel Input Adapter to harmonize inputs from datasets with varying channel formats.
+
+Squeeze-and-Excitation (SE) blocks that improve channel-wise attention, enabling the model to focus on discriminative thermal features.
+
+A redesigned classifier head optimized for binary gender classification.
+
+Use of transfer learning by initializing with ImageNet-pretrained weights, accelerating training convergence and improving performance even with limited data.
+
+Our model was derived through a rigorous empirical process, iterating through multiple architecture variants and hyperparameter configurations. The final version achieved state-of-the-art results across both individual and combined datasets. On the Tufts and Charlotte datasets, TH-SE-ResNet outperformed standard CNNs in all key metrics (accuracy, precision, recall, F1-score), and demonstrated robust performance even when datasets were combined. Notably, it maintained a better gender balance in predictions, addressing the male-bias commonly observed in previous models like Cloud_Res and IRT_ResNet.
+
+In comparison, standard ResNet-50 models showed poor generalizability across datasets, while EfficientNet-B0 and AlexNet, though lightweight, underperformed due to architectural limitations in capturing deeper features in thermal data. TH-SE-ResNet proved especially effective in heterogeneous settings, sustaining strong accuracy (87–90%) and balanced F1-scores (0.87–0.90) even in the presence of occlusion and low signal quality.
+
+Overall, this paper makes several key contributions:
+A thorough benchmarking of CNN models for thermal facial gender classification.
+Integration of preprocessing, augmentation, and class balancing for robust training.
+A novel CNN architecture tailored to the unique challenges of thermal imaging.
+Demonstration of generalizability through testing on combined datasets.
+Insights into the limitations of existing models and strategies to mitigate them.
+
+The proposed TH-SE-ResNet represents a scalable and deployable solution for real-world applications in surveillance, smart vehicles, and beyond, offering fairness, accuracy, and efficiency in thermal gender classification systems.
