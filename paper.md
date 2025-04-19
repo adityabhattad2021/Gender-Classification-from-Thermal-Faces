@@ -48,8 +48,6 @@ The Charlotte-ThermalFace Dataset comprises approximately 10,364 thermal facial 
 
 To enhance data diversity and expand the training corpus, we constructed a combined dataset by integrating the Tufts and Charlotte collections following a systematic merging protocol. A significant technical challenge encountered during this integration was the channel discrepancy between datasets—the Charlotte images were originally single-channel thermal representations, whereas the Tufts dataset employed a three-channel format. To address this incompatibility, we implemented channel replication for the Charlotte images, duplicating the single thermal channel across three channels to establish format consistency with the Tufts data structure. Furthermore, to prevent model bias towards the overrepresented class, we carefully balanced the gender distribution by selecting an equal number of images per gender category through strategic sampling. This integration yielded a substantially enlarged dataset of approximately 11,921 images with perfect gender balance (50% female, 50% male), thereby providing our models with enhanced training diversity spanning different thermal imaging conditions, acquisition parameters, and subject characteristics.
 
-In addition to the primary datasets, we designed cross-dataset experimental protocols to rigorously evaluate model generalization capabilities across different thermal imaging domains. These experiments comprised two principal configurations: Tufts-to-Charlotte (training on Tufts data and evaluating on Charlotte) and Charlotte-to-Tufts (training on Charlotte and evaluating on Tufts). This cross-domain validation approach enables assessment of our models' ability to generalize across varying thermal imaging conditions, camera specifications, and data collection protocols—a critical factor for real-world deployment scenarios where thermal imaging parameters may differ substantially from training conditions.
-
 **Table 1: Summary of Datasets**
 
 | Dataset    | Size (Images) | Gender Distribution     | Channels                        |  
@@ -95,23 +93,22 @@ Images were resized according to model-specific requirements—224×224 pixels f
 
 ### 3.2.3 Data Augmentation Strategies
 
-We developed a sophisticated augmentation strategy tailored specifically for thermal facial imagery, carefully balancing the need for dataset expansion with the preservation of thermally significant features:
+We developed a sophisticated augmentation strategy tailored specifically for thermal facial imagery, balancing the need for dataset expansion with the preservation of thermally significant features:
 
-We implemented distinct augmentation pipelines optimized for different network architectures. For RGB-designed models (AlexNet, VGG, ResNet, EfficientNet, Inception), we employed a comprehensive suite of transformations including random resized cropping, horizontal flipping, rotation (±15°), brightness and contrast adjustments (±20%), and Gaussian blurring. For our thermal-specific TH-SE-ResNet, we employed a more conservative approach with grayscale conversion, random resized cropping, horizontal flipping, moderate rotation (±15°), and controlled affine transformations (±10% translation).
+For baseline models (AlexNet, VGG, ResNet, EfficientNet), we implemented a augmentation pipeline including random resized cropping (scale 0.8-1.0), horizontal flipping, moderate rotation (±15°), and light Gaussian blurring (kernel size=3, sigma=0.1-2.0). The Inception model follows a similar strategy but uses architecture-specific dimensions (299px crop size, 342px resize dimensions).
 
-To address the pronounced gender imbalance in the Tufts dataset (30.32% female, 69.68% male), we implemented targeted augmentation for the underrepresented female class. This approach involved creating additional augmented samples exclusively for female subjects, effectively doubling the female representation in the training set while preserving the original male samples. This selective augmentation substantially improved class balance without introducing excessive redundancy or overfitting risks.
+For our novel TH-SE-ResNet, we employed a more conservative approach with grayscale conversion to single-channel input and a modified augmentation pipeline. This includes horizontal flipping, reduced rotation (±10°), and carefully controlled affine transformations (degrees=5°, translation=±5%, scaling=±5%). We used black fill (value=0) for all geometric transformations to maintain thermal signature consistency, and a slightly reduced Gaussian blur (sigma=0.1-1.5) to preserve subtle thermal gradients. This conservative parameterization helps preserve the thermal signature integrity crucial for gender classification.
 
-Our augmentation protocol was carefully calibrated to preserve the thermal signature integrity crucial for gender classification. Specifically, we avoided extreme geometric transformations and color-space alterations that might distort thermally significant facial features. The brightness and contrast adjustments were conservatively parameterized to simulate natural variations in thermal imaging conditions without introducing artifacts that could compromise the intrinsic thermal patterns.
+To address the pronounced gender imbalance in the Tufts dataset, we implemented targeted augmentation for the underrepresented female class. The system identifies female samples and applies additional augmentations exclusively to these instances, effectively doubling the female representation in the training set. This selective augmentation substantially improves class balance without introducing excessive redundancy or overfitting risks to the majority class.
 
-For the combined dataset, we implemented a sophisticated integration protocol that addressed both the channel disparity between datasets and the gender distribution imbalance. To achieve perfect gender balance (50% female, 50% male), we employed controlled sampling from both constituent datasets, ensuring representative inclusion of diverse thermal imaging conditions and subject characteristics while maintaining strict subject-level separation between training and testing partitions.
+Our implementation combines multiple dataset variations during training: (1) a base dataset with minimal preprocessing, (2) a fully augmented version of the entire dataset (charllate and combined), and (3) an additional augmented subset containing only samples from the minority class (tufts dataset). This approach provides models with both the original thermal signatures and systematically expanded variations, with particular emphasis on improving representation of the underrepresented gender.
 
-The final augmented training sets demonstrated substantially enhanced diversity and robustness. For the Tufts dataset, our class-balanced augmentation approach effectively doubled the representation of the underrepresented female class. The combined dataset benefited from both the targeted augmentation and the integration of diverse thermal imaging modalities, resulting in a comprehensive training corpus that captured a wide spectrum of thermal facial characteristics across different acquisition parameters and subject demographics.
+For all models, we maintained separate transformation pipelines for training and testing. Test-time preprocessing was kept minimal (resize, center crop, and normalization) to evaluate model performance on thermal signatures closer to their original form. All images were normalized using thermal-specific normalization statistics.
 
 This carefully engineered preprocessing and augmentation pipeline provided our models with high-quality, balanced training data while preserving the critical thermal signatures necessary for accurate gender classification in thermal facial imagery.
 
-
 ![new_thermal_augmentation_combined_examplesaa](https://github.com/user-attachments/assets/8842aedb-3c13-432e-b7af-baa0b1c6c789)
-**Figure 2: Thermal Image Augmentation Examples** - A grid showing original thermal facial images alongside various augmented versions (horizontal flip, rotation, contrast adjustment, etc.)
+**Figure 2: Thermal Image Augmentation Examples** - A grid showing original thermal facial images alongside various augmented versions 
 
 
 **Table 3: Final Experimental Dataset Configurations**
@@ -120,18 +117,13 @@ This carefully engineered preprocessing and augmentation pipeline provided our m
 | Tufts-only | Tufts train | Tufts test | ~1,600* | 330 |
 | Charlotte-only | Charlotte train | Charlotte test | ~16,000* | 2,000 |
 | Combined | Combined train | Combined test | 18,200 | 2,290 |
-| Tufts-to-Charlotte | Tufts train | Charlotte test | ~1,600* | 2,000 |
-| Charlotte-to-Tufts | Charlotte train | Tufts test | ~16,000* | 330 |
 *Approximate values after augmentation
-
-**Figure 3: Complete Data Preprocessing and Augmentation Pipeline** - A flowchart showing the end-to-end process from raw dataset organization through partitioning, normalization, augmentation, to final training/testing sets.
-
 
 ## 3.3 Proposed CNN Architecture
 
 ### 3.3.1 Overview
 
-Our research introduces a sophisticated deep learning framework built upon a modified ResNet-50 architecture, tailored specifically for thermal (single channel) image classification. The selection of ResNet-50 as the foundational backbone is driven by its proven ability to address challenges inherent in training very deep neural networks. A hallmark of ResNet is its use of residual connections, which mitigate the vanishing gradient problem by introducing skip connections that allow gradients to propagate more effectively during backpropagation. This design enables the construction of deeper architectures without compromising performance, a critical advantage when extracting intricate features from complex human faces in thermal imagery.
+Our research introduces a novel deep learning framework built upon a modified ResNet-50 architecture, tailored specifically for thermal (single channel) image classification. The selection of ResNet-50 as the foundational backbone is driven by its proven ability to address challenges inherent in training very deep neural networks. A hallmark of ResNet is its use of residual connections, which mitigate the vanishing gradient problem by introducing skip connections that allow gradients to propagate more effectively during backpropagation. This design enables the construction of deeper architectures without compromising performance, a critical advantage when extracting intricate features from complex human faces in thermal imagery.
 
 ResNet-50 strikes an exceptional balance between computational efficiency and representational power. Its 50-layer depth facilitates the hierarchical extraction of features, ranging from low-level details such as edges and textures to high-level semantic patterns, which are essential for discerning subtle gender specific cues in thermal images. Furthermore, initializing the model with pretrained weights from ImageNet provides a robust starting point. Although thermal images differ from natural images, the general visual features learned from ImageNet—such as edge detection and texture analysis—serve as transferable knowledge that can be fine-tuned to adapt to the our domain. This transfer learning approach accelerates convergence and enhances performance, particularly when training data is limited.
 

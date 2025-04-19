@@ -17,7 +17,7 @@ def get_transforms(model_name):
         crop_size = 224
         resize_size = 256
         normalize = basline_normalize
-        # Basic transforms (usually for testing or simple training)
+        # Basic transforms 
         base_trans = transforms.Compose([
             transforms.Resize(resize_size),
             transforms.CenterCrop(crop_size),
@@ -77,11 +77,11 @@ def get_transforms(model_name):
             transforms.RandomHorizontalFlip(),
             transforms.RandomRotation(10,fill=0),
             transforms.RandomAffine(
-                degrees=5,  # Reduce rotation range
-                translate=(0.05, 0.05),  # Reduce translation to keep subject in frame
+                degrees=5,  # Rotation range
+                translate=(0.05, 0.05),  # light translation
                 scale=(0.95, 1.05),  # Slight scaling variations
                 fill=0  # Black background for thermal consistency
-            ),# Slight translation
+            ),
             transforms.GaussianBlur(kernel_size=3, sigma=(0.1, 1.5)),
             transforms.ToTensor(),
             normalize
