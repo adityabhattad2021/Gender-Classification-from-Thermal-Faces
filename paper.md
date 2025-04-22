@@ -568,11 +568,11 @@ These learning curves (Figures 7 and 8) visually confirm the quantitative findin
 
 For a detailed view of the classification performance of the top-performing model, the confusion matrices for TH-SE-ResNet on the Tufts test set are shown.
 
-[todo]
+![tufts_64](https://github.com/user-attachments/assets/b2ca07bc-5df4-419a-b60c-a559b1c86788)
 
 Figure 9a: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 64
 
-[todo]
+![tufts_32](https://github.com/user-attachments/assets/5a682e6c-532b-475b-b2b3-7ca3548d3f87)
 
 Figure 9b: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 32
 
@@ -633,11 +633,11 @@ Figures 10 and 11 depict the generally lower performance ceiling on the Charlott
 
 The confusion matrices for TH-SE-ResNet on the Charlotte dataset provide a breakdown of the errors.
 
-[todo]
+![charllate_64_](https://github.com/user-attachments/assets/b84bdbbe-1dea-48c2-a0cf-c5df0aa383ee)
 
 Figure 12a: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 64
 
-[todo]
+![charllate_32_](https://github.com/user-attachments/assets/62d661bb-924e-4da4-8f32-612fb1fb024e)
 
 Figure 12b: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 32
 
@@ -682,11 +682,12 @@ Figures 13 and 14 illustrate that TH-SE-ResNet (blue line) maintained its charac
 
 The confusion matrices for TH-SE-ResNet provide insight into the specific error patterns on this mixed dataset.
 
-[todo]
+![combined_64](https://github.com/user-attachments/assets/8ccb72d1-5b01-4da3-a229-0e713b7c8649)
 
 Figure 15a: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 64
 
-[todo]
+![combined_32](https://github.com/user-attachments/assets/05b79435-34b4-407e-9885-79e6f1a4d386)
+
 Figure 15b: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 32
 
 The confusion matrices for the combined dataset (Figures 15a and 15b) show error levels intermediate between the Tufts and Charlotte experiments. While the diagonal elements are strong, confirming the high overall accuracy (achieving 90% for batch 64 and 87% for batch 32, as mentioned earlier), the off-diagonal counts are non-negligible. For batch size 64 (Figure 15a), 1096 females and 970 males were correctly identified. Misclassifications included 49 females predicted as male and a notably higher number of 175 males predicted as female. With batch size 32 (Figure 15b), the model correctly identified 1126 females and 869 males. In this case, the asymmetry was even more pronounced: only 19 females were misclassified as male, while a substantial 276 males were misclassified as female. Both matrices highlight the model's tendency, particularly with batch size 32, to misclassify males as females more often than the reverse when dealing with data combined from different thermal cameras and conditions.
