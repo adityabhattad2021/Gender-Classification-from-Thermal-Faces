@@ -37,20 +37,15 @@ The Infrared Thermal Image Gender Classifier (IRT_ResNet) proposed by Jalil et a
 Thermal-based gender classification from UAV-mounted cameras has also gained attention. Studies like "Thermal-based Gender Recognition Using Drones" and "Gender Recognition Using UAV-based Thermal Images" explored mobile applications where thermal images captured from drones were used for biometric analysis. However, these setups faced challenges due to image instability, resolution loss, and varying subject distance. CNNs like AlexNet and GoogLeNet achieved moderate accuracies (82–85%), but performance varied depending on environmental conditions.
 To address occlusions and dataset-specific challenges, some researchers proposed the use of 3D facial models or spatial-temporal analysis (e.g., CNN-BGRU models) to integrate motion or depth-based cues into classification. These approaches, while theoretically sound, are computationally intensive and not well-suited for low-power or real-time deployments.
 In our work, we aim to overcome these limitations through the design of a novel CNN architecture called TH-SE-ResNet. It builds upon the ResNet backbone but introduces several key innovations:
-Channel Input Adapter: Given the inconsistency in channel formats between datasets (e.g., grayscale vs. RGB vs. 6-channel IR-RGB), our model integrates an adapter module to standardize inputs, allowing for seamless dataset fusion. This is particularly crucial as we combine the Tufts University and Charlotte-ThermalFace datasets in our experiments.
-
+Channel Input Adapter: Given the inconsistency in channel formats between datasets (e.g., grayscale vs. RGB), our model integrates an adapter module to standardize inputs, allowing for seamless dataset fusion. This is particularly crucial as we combine the Tufts University and Charlotte-ThermalFace datasets in our experiments.
 
 Squeeze-and-Excitation (SE) Blocks: To improve feature discrimination, SE blocks are embedded within residual units. These blocks dynamically recalibrate channel-wise feature responses, enabling the network to prioritize salient thermal features—especially useful in handling occlusions and low-contrast areas.
 
-
 Class-Imbalance Mitigation: We incorporate class-weighted loss functions during training to counter the male-biased prediction patterns observed in previous studies (e.g., Jalil et al., 2022). This ensures fairer and more balanced classification across genders.
-
 
 Data Augmentation Pipeline: We apply a robust preprocessing and augmentation routine—using techniques such as rotation, flipping, and Gaussian noise injection—to increase model generalizability and reduce overfitting.
 
-
 Evaluation on Combined Datasets: Unlike prior work that tested models on isolated datasets, we evaluate our model on a combined Tufts-Charlotte dataset, increasing diversity in facial features, pose variations, and sensor modalities, thus pushing the limits of generalization.
-
 
 Our experimental findings demonstrate that TH-SE-ResNet consistently outperforms standard architectures across multiple metrics (accuracy, precision, recall, F1-score) and maintains high performance even under occlusion and noise. Unlike previous models limited to specific deployment environments, our model is designed for cloud and edge deployment, supporting real-time inference and scalability.
 In conclusion, while existing literature has made considerable strides in leveraging CNNs for thermal gender classification, challenges remain in model generalization, dataset handling, feature prioritization, and bias mitigation. Our work builds on this foundation by introducing a tailored architecture that directly addresses these gaps. TH-SE-ResNet offers a more complete, fair, and deployable solution—moving the field closer to practical, large-scale implementations of thermal gender classification systems.
@@ -124,7 +119,7 @@ We developed a sophisticated augmentation strategy tailored specifically for the
 
 For baseline models (AlexNet, VGG, ResNet, EfficientNet), we implemented a augmentation pipeline including random resized cropping (scale 0.8-1.0), horizontal flipping, moderate rotation (±15°), and light Gaussian blurring (kernel size=3, sigma=0.1-2.0). The Inception model follows a similar strategy but uses architecture-specific dimensions (299px crop size, 342px resize dimensions).
 
-For our novel TH-SE-ResNet, we employed a more conservative approach with grayscale conversion to single-channel input and a modified augmentation pipeline. This includes horizontal flipping, reduced rotation (±10°), and carefully controlled affine transformations (degrees=5°, translation=±5%, scaling=±5%). We used black fill (value=0) for all geometric transformations to maintain thermal signature consistency, and a slightly reduced Gaussian blur (sigma=0.1-1.5) to preserve subtle thermal gradients. This conservative parameterization helps preserve the thermal signature integrity crucial for gender classification.
+For our novel TH-SE-ResNet, we employed a more conservative approach with grayscale conversion to single-channel input (for tufts dataset) and a modified augmentation pipeline. This includes horizontal flipping, reduced rotation (±10°), and carefully controlled affine transformations (degrees=5°, translation=±5%, scaling=±5%). We used black fill (value=0) for all geometric transformations to maintain thermal signature consistency, and a slightly reduced Gaussian blur (sigma=0.1-1.5) to preserve subtle thermal gradients. This conservative parameterization helps preserve the thermal signature integrity crucial for gender classification.
 
 To address the pronounced gender imbalance in the Tufts dataset, we implemented targeted augmentation for the underrepresented female class. The system identifies female samples and applies additional augmentations exclusively to these instances, effectively doubling the female representation in the training set. This selective augmentation substantially improves class balance without introducing excessive redundancy or overfitting risks to the majority class.
 
@@ -135,7 +130,7 @@ For all models, we maintained separate transformation pipelines for training and
 This carefully engineered preprocessing and augmentation pipeline provided our models with high-quality, balanced training data while preserving the critical thermal signatures necessary for accurate gender classification in thermal facial imagery.
 
 ![new_thermal_augmentation_combined_examplesaa](https://github.com/user-attachments/assets/8842aedb-3c13-432e-b7af-baa0b1c6c789)
-**Figure 2: Thermal Image Augmentation Examples** - A grid showing original thermal facial images alongside various augmented versions 
+**Figure 2: Thermal Image Augmentation Examples** - A grid showing original thermal facial images alongside various augmented versions (without normalization).
 
 
 **Table 3: Final Experimental Dataset Configurations**
@@ -457,7 +452,7 @@ We initialize the baseline models with ImageNet-pretrained weights, freezing the
 ## 4. Experimental Results
 
 ### 4.1 Experimental Setup
-To rigorously assess the efficacy of our baseline models and the proposed Ther-SE-ResNet architecture, we designed a comprehensive experimental framework involving multiple dataset configurations. Specifically, we utilized the Tufts dataset, the Charlotte dataset, and a combined dataset merging both, and two cross-dataset. These configurations enabled us to evaluate the models’ performance within individual datasets as well as their ability to generalize across distinct datasets, a critical aspect of real-world applicability.
+To rigorously assess the efficacy of our baseline models and the proposed TH-SE-ResNet architecture, we designed a comprehensive experimental framework involving multiple dataset configurations. Specifically, we utilized the Tufts dataset, the Charlotte dataset, and a combined dataset merging both. These configurations enabled us to evaluate the models’ performance within individual datasets as well as their ability to generalize across distinct datasets, a critical aspect of real-world applicability.
 
 For training, all models were optimized using the Adam algorithm, configured with momentum parameters \(\beta_1 = 0.9\) and \(\beta_2 = 0.999\), which are widely adopted for their stability and efficiency in deep learning tasks. We set the initial learning rate to 0.00005, a value selected to ensure gradual parameter updates suitable for our architecture. To enhance training dynamics, we implemented a 5-epoch warmup phase during which the learning rate increased linearly from zero to the specified value, followed by cosine annealing for the subsequent epochs to promote smooth convergence to an optimal solution. We experimented with batch sizes of 32 and 64 to explore their effects on training stability and generalization performance, providing insights into the trade-offs between computational efficiency and model accuracy.
 
@@ -553,7 +548,7 @@ When examining the class-specific metrics, we observe a consistent pattern acros
 
 Interestingly, the performance impact of batch size varied across architectures. While TH-SE-ResNet and AlexNet maintained relatively stable performance across batch sizes, EfficientNet B0 exhibited a dramatic performance degradation when the batch size increased from 32 to 64, with accuracy dropping from 79% to 71%. This suggests that EfficientNet's learning dynamics are more sensitive to batch size configurations than other architectures.
 
-The convergence behavior, as illustrated in the training loss and test accuracy graphs, further differentiates TH-SE-ResNet from the other models. TH-SE-ResNet demonstrated remarkably rapid convergence, reaching near-optimal performance within the first two epochs and maintaining a stable performance trajectory thereafter. In contrast, models like ResNet and Inception exhibited more gradual learning curves, requiring additional epochs to approach their performance plateaus.
+The convergence behavior, as illustrated in the training loss and test accuracy graphs, further differentiates TH-SE-ResNet from the other models. TH-SE-ResNet demonstrated remarkably rapid convergence, reaching near-optimal performance within the first few epochs and maintaining a stable performance trajectory thereafter. In contrast, models like ResNet and Inception exhibited more gradual learning curves, requiring additional epochs to approach their performance plateaus.
 
 EfficientNet B0, despite its reputation for efficiency in other computer vision tasks, performed notably poorly on this gender classification task, achieving the lowest accuracy among all tested models. This underperformance may be attributed to the model's design optimizations for general image recognition tasks, which may not translate effectively to the specific feature patterns relevant for gender classification in the Tufts dataset.
 
@@ -581,10 +576,7 @@ Figure 9a: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 64
 
 Figure 9b: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 32
 
-The confusion matrices in Figures 9a and 9b provide a clear picture of TH-SE-ResNet's effectiveness on the Tufts data. The strong diagonal values indicate a high number of correct classifications for both female and male classes. Off-diagonal values, representing misclassifications, are minimal. For instance, with batch size 64 (Figure 9a), only 15 females were misclassified as male, and zero males were misclassified as female out of the respective test samples. Similarly, with batch size 32 (Figure 9b), errors were 10 females misclassified as male and only 1 male as female. These low error counts visually corroborate the high accuracy (95-97%) and balanced F1 scores reported earlier, demonstrating the model's ability to effectively classify genders despite the dataset's inherent imbalance.
-
-In summary, our empirical evaluation on the Tufts dataset demonstrates that the Th-SE-ResNet architecture provides substantial performance advantages for gender classification tasks. Its superior accuracy, balanced class-specific performance, and rapid convergence characteristics make it particularly well-suited for applications where gender classification accuracy is critical. Meanwhile, the consistent gender-based performance disparities observed across models highlight the importance of addressing potential biases in both model architectures and training methodologies for gender classification tasks.
-
+The confusion matrices in Figures 9a and 9b provide a clear picture of TH-SE-ResNet's effectiveness on the Tufts data. The strong diagonal values indicate a high number of correct classifications for both female and male classes. Off-diagonal values, representing misclassifications, are minimal. For instance, with batch size 32 (Figure 9b), only 15 females were misclassified as male, and zero males were misclassified as female out of the respective test samples. Similarly, with batch size 64 (Figure 9a), errors were 10 females misclassified as male and only 1 male as female. These low error counts visually corroborate the high accuracy (95-97%) and balanced F1 scores reported earlier, demonstrating the model's ability to effectively classify genders despite the dataset's inherent imbalance.
 
 ### 4.2.2 Charlotte Dataset
 
@@ -619,7 +611,7 @@ A particularly noteworthy finding was the substantial performance degradation of
 
 Analysis of class-specific metrics revealed a pronounced gender bias across most models, but with a reversed pattern compared to the Tufts dataset. While the Tufts dataset generally exhibited higher precision for female classification, the Charlotte dataset showed higher recall for female subjects across most models. For instance, AlexNet (batch 32) achieved 90% recall for females but only 49% for males, indicating a strong tendency to classify subjects as female. This reversed bias might be attributed to the more balanced gender distribution in the Charlotte dataset (1030 female and 1029 male samples) combined with the distinctive thermal signatures captured under varying environmental conditions.
 
-The convergence patterns, as illustrated in the training loss and test accuracy graphs, reveal intriguing dynamics. TH-SE-ResNet demonstrated remarkable early convergence, with its training loss rapidly decreasing within the first epoch. However, its test accuracy on the Charlotte dataset exhibited greater fluctuation compared to its stable performance on the Tufts dataset, particularly with batch size 32. This fluctuation suggests that despite its superior overall performance, TH-SE-ResNet encountered challenges in generalizing consistently across the varying conditions represented in the Charlotte dataset.
+The convergence patterns, as illustrated in the training loss and test accuracy graphs, reveal intriguing dynamics. TH-SE-ResNet again demonstrated remarkable early convergence, with its training loss rapidly decreasing within the first few epochs. However, its test accuracy on the Charlotte dataset exhibited greater fluctuation compared to its stable performance on the Tufts dataset, particularly with batch size 32. This fluctuation suggests that despite its superior overall performance, TH-SE-ResNet encountered challenges in generalizing consistently across the varying conditions represented in the Charlotte dataset.
 
 EfficientNet B0 performed comparatively better on the Charlotte dataset than on the Tufts dataset in relative terms. While it ranked among the lower performers on the Tufts dataset, it achieved respectable accuracy rates of 68% and 63% for batch sizes 32 and 64, respectively, on the Charlotte dataset. This improved relative performance might indicate that EfficientNet's design is better suited to handling the varied thermal signatures present in the Charlotte dataset.
 
@@ -630,7 +622,6 @@ The F1 scores further emphasize the superior performance balance of TH-SE-ResNet
 The learning curves for the Charlotte dataset illustrate these trends.
 
 ![comparison_charlotte_batch32](https://github.com/user-attachments/assets/9d1a70c4-06a7-4e8c-a562-c95a28d6b50d)
-]
 
 Figure 10: Training Loss and Test Accuracy Curves on Charlotte Dataset (Batch Size 64)
 
@@ -650,7 +641,7 @@ Figure 12a: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 64
 
 Figure 12b: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 32
 
-Compared to the Tufts results, the confusion matrices in Figures 12a and 12b show considerably higher off-diagonal counts, reflecting the lower overall accuracy (81-85%). For batch size 64 (Figure 12a), while 947 females and 794 males were correctly identified, a substantial number of misclassifications occurred (235 females predicted as male, 83 males predicted as female). A similar pattern of significant errors is visible for batch size 32 (Figure 12b: 175 females predicted as male, 49 males as female). These matrices visually underscore the challenge posed by the Charlotte dataset's variability and limited subject pool, leading to more confusion between the gender classes for the model.
+Compared to the Tufts results, the confusion matrices in Figures 12a and 12b show considerably higher off-diagonal counts, reflecting the lower overall accuracy (achieving 85% for batch 64 and 81% for batch 32, as mentioned earlier). For batch size 64 (Figure 12a), while 947 females and 794 males were correctly identified, a substantial number of misclassifications occurred: 83 females were predicted as male, and 235 males were predicted as female. For batch size 32 (Figure 12b), the model correctly identified 1024 females and 639 males. Misclassifications included only 6 females being predicted as male, but a significantly higher number of 390 males being predicted as female. These matrices visually underscore the challenge posed by the Charlotte dataset's variability and limited subject pool, leading to more confusion between the gender classes for the model, particularly in identifying males correctly with batch size 32.
 
 ### 4.3 Results on Combined Dataset:
 
@@ -691,15 +682,14 @@ Figures 13 and 14 illustrate that TH-SE-ResNet (blue line) maintained its charac
 
 The confusion matrices for TH-SE-ResNet provide insight into the specific error patterns on this mixed dataset.
 
-![alt text](https://github.com/user-attachments/assets/954c9da1-26e6-4769-8cdb-f5ae44d20e46)
+[todo]
 
 Figure 15a: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 64
 
-![alt text](https://github.com/user-attachments/assets/4bd11d6a-12a7-4cd6-a8a2-de03d54bbbc9)
-
+[todo]
 Figure 15b: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 32
 
-The confusion matrices for the combined dataset (Figures 15a and 15b) show error levels intermediate between the Tufts and Charlotte experiments. While the diagonal elements are strong, confirming the high overall accuracy (87-90%), the off-diagonal counts are non-negligible. Notably, with batch size 64 (Figure 15a), there is a pronounced asymmetry: 390 females were misclassified as male, whereas only 6 males were misclassified as female. This indicates a specific difficulty in correctly recalling female subjects under these conditions, despite high precision for male predictions. With batch size 32 (Figure 15b), the errors are more balanced but still significant (276 females misclassified as male, 19 males as female). These matrices highlight the complexities of classifying gender accurately when dealing with data combined from different thermal cameras and conditions.
+The confusion matrices for the combined dataset (Figures 15a and 15b) show error levels intermediate between the Tufts and Charlotte experiments. While the diagonal elements are strong, confirming the high overall accuracy (achieving 90% for batch 64 and 87% for batch 32, as mentioned earlier), the off-diagonal counts are non-negligible. For batch size 64 (Figure 15a), 1096 females and 970 males were correctly identified. Misclassifications included 49 females predicted as male and a notably higher number of 175 males predicted as female. With batch size 32 (Figure 15b), the model correctly identified 1126 females and 869 males. In this case, the asymmetry was even more pronounced: only 19 females were misclassified as male, while a substantial 276 males were misclassified as female. Both matrices highlight the model's tendency, particularly with batch size 32, to misclassify males as females more often than the reverse when dealing with data combined from different thermal cameras and conditions.
 
 To provide concrete examples of the model's performance on this heterogeneous data, Figure 16 displays sample images from the combined test set alongside the true labels and the predictions from the TH-SE-ResNet model (trained with batch size 64).
 
@@ -707,40 +697,7 @@ To provide concrete examples of the model's performance on this heterogeneous da
 
 **Figure 16: Sample Classification Analysis** - Examples from Combined Dataset Test Set (TH-SE-ResNet, B64)
 
-These examples in Figure 16 offer a qualitative glimpse into the model's behavior, showcasing instances of correct classifications alongside examples where the model failed, likely due to variations in pose, expression, or thermal artifacts inherent in the combined dataset.
-
-
-(The results I have from ablation study are not consistant enough, this is performed on charllate dataset, and for the complete model results are different then the once we mentioned above, most probably do to different seed, so either we need to run the ablation study again or remove the results from the paper.)
-## 4.5 Ablation Study
-
-The TH-SE-ResNet architecture emerged from a deliberate redesign of the standard ResNet50 model to address specific challenges in processing single-channel thermal imagery. Our architectural decisions were validated through a comprehensive ablation study that demonstrated the effectiveness of each component under varying conditions.
-
-### 4.5.1 Experimental Methodology
-The evaluation employed the "combined" dataset and tracked two primary performance metrics—training loss and test accuracy—across ten epochs. Experiments were conducted with two different batch sizes (64 and 32) to assess the architecture's sensitivity to training conditions.
-
-### 4.5.2 Rationale for Key Components
-
-#### 4.5.2.1 Squeeze-and-Excitation Blocks
-
-We integrated Squeeze-and-Excitation (SE) blocks throughout the architecture to enhance feature representation quality. Thermal imagery often contains subtle temperature variations with critical diagnostic information that can be overshadowed by stronger signals. SE blocks adaptively recalibrate channel-wise feature responses by explicitly modeling interdependencies between channels, allowing the network to selectively emphasize informative features while suppressing less useful ones. Our ablation study confirms this design choice, showing that SE blocks contribute a 2% improvement in accuracy with larger batch sizes, elevating performance from 90% to 92%.
-
-#### 4.5.2.2 Modified Fully Connected Layer
-
-The standard fully connected layer in ResNet was replaced with a more sophisticated structure incorporating dropout regularization, multiple linear transformations, and a SE block. This modification addresses the challenge of overfitting in thermal image classification, where training datasets are often limited in size and diversity compared to RGB datasets. The modified FC layer introduces controlled regularization through dual dropout layers (rates of 0.5 and 0.3) and leverages intermediate dimensionality adjustments to create a more generalizable feature representation. The ablation study validates this approach for larger batch sizes, where the modified FC layer outperforms the standard implementation by approximately 2% in accuracy.
-
-#### 4.5.2.3 Input Convolution Layer
-
-To handle the dimensionality mismatch between single-channel thermal inputs and the three-channel expectation of standard ResNet architectures, we incorporated an input convolution layer that projects the thermal data into a three-channel representation. While simple channel replication could serve as an alternative, the dedicated convolution layer provides the network with learnable parameters to transform the input representation in a data-driven manner. Though our ablation study shows comparable performance between this approach and simple channel replication, the convolution layer maintains architectural consistency and offers potentially greater flexibility for diverse thermal imaging scenarios.
-
-#### 4.5.2.4 Batch Size Sensitivity and Architectural Adaptations
-
-Our ablation study revealed insights regarding the sensitivity of TH-SE-ResNet to batch size variations. This sensitivity stems from the interplay between regularization intensity (particularly in the modified FC layer) and the statistical properties of gradient estimates at different batch sizes. With larger batches (64), gradient estimates are more stable, allowing the additional regularization from dropout layers to effectively prevent overfitting without impeding learning. Conversely, smaller batch (32) introduce inherent noise in gradient estimates, which, when combined with strong explicit regularization, can hinder convergence.
-
-This finding justifies a flexible implementation approach where the architecture adapts based on anticipated deployment conditions. For systems with sufficient computational resources to support larger batch sizes, the complete TH-SE-ResNet with SE blocks and the modified FC layer maximizes performance. For resource-constrained environments requiring smaller batches, a variant with a standard FC layer proves more appropriate, achieving up to 95% accuracy compared to 90-92% with the modified FC.
-
-#### 4.5.2.5 Decision on Component Selection
-
-For applications requiring maximum accuracy and having access to substantial computational resources, the full architecture with all components delivers optimal performance. For deployments on edge devices with memory or processing limitations, simpler variants can be selected with minimal performance degradation. The ablation study demonstrates that even the simplest configuration maintains performance well above 90%, justifying our design philosophy of maintaining robust performance across diverse implementation scenarios.
+These examples in Figure 16 offer a qualitative glimpse into the model's behavior, showcasing instances of correct classifications alongside examples where the model failed, likely due to variations in pose, expression, or thermal artifacts inherent in the combined dataset. The model's ability to correctly classify a range of subjects, including those with atypical thermal patterns, is evident in the successful predictions. However, the misclassified examples also highlight the challenges posed by the dataset's diversity and the inherent variability in thermal imaging.
 
 ## 5. Discussion and Future Scope
 

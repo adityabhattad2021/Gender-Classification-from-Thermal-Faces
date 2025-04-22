@@ -30,8 +30,8 @@ pip install -r requirements.txt
 ## Data Setup
 
 1.  **Download Datasets:**
-    *   **Tufts University Thermal Face Dataset:** [Link to dataset source or download page]
-    *   **Charlotte-ThermalFace Dataset:** [Link to dataset source or download page]
+    *   [**Tufts University Thermal Face Dataset**](https://tdface.ece.tufts.edu/)
+    *   [**Charlotte-ThermalFace Dataset**](https://github.com/TeCSAR-UNCC/UNCC-ThermalFace)
 2.  **Structure Data:** Organize the datasets into the following structure within a base directory (e.g., `./gender_data`):
 
     ```
@@ -82,7 +82,7 @@ This will:
 ## Code Structure
 
 *   `core/main.py`: Main script to orchestrate experiments.
-*   `core/models.py`: Defines the custom `HybridResNet` and `SEBlock`.
+*   `core/models.py`: Defines the custom `HybridResNet (TH-SE-ResNet)` and `SEBlock`.
 *   `core/model_setup.py`: Handles initialization and configuration of all models (baseline and custom).
 *   `core/utils.py`: Contains data loading (`load_datasets`) and image transformation (`get_transforms`) functions.
 *   `core/train_eval.py`: Implements the `train_model` and `evaluate_model` functions.
