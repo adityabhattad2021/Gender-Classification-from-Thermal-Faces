@@ -6,8 +6,7 @@ class SEBlock(nn.Module):
     """Squeeze-and-Excitation Block with FC support"""
     def __init__(self, channel, reduction=16):
         super(SEBlock, self).__init__()
-        # self.is_conv = None  # Track input type
-        
+
         # For both Conv and FC cases
         self.fc = nn.Sequential(
             nn.Linear(channel, channel // reduction),
