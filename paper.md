@@ -568,11 +568,11 @@ These learning curves (Figures 7 and 8) visually confirm the quantitative findin
 
 For a detailed view of the classification performance of the top-performing model, the confusion matrices for TH-SE-ResNet on the Tufts test set are shown.
 
-![tufts_64](https://github.com/user-attachments/assets/b2ca07bc-5df4-419a-b60c-a559b1c86788)
+[todo]
 
 Figure 9a: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 64
 
-![tufts_32](https://github.com/user-attachments/assets/5a682e6c-532b-475b-b2b3-7ca3548d3f87)
+[todo]
 
 Figure 9b: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 32
 
@@ -633,11 +633,11 @@ Figures 10 and 11 depict the generally lower performance ceiling on the Charlott
 
 The confusion matrices for TH-SE-ResNet on the Charlotte dataset provide a breakdown of the errors.
 
-![charllate_64_](https://github.com/user-attachments/assets/b84bdbbe-1dea-48c2-a0cf-c5df0aa383ee)
+[todo]
 
 Figure 12a: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 64
 
-![charllate_32_](https://github.com/user-attachments/assets/62d661bb-924e-4da4-8f32-612fb1fb024e)
+[todo]
 
 Figure 12b: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 32
 
@@ -682,12 +682,11 @@ Figures 13 and 14 illustrate that TH-SE-ResNet (blue line) maintained its charac
 
 The confusion matrices for TH-SE-ResNet provide insight into the specific error patterns on this mixed dataset.
 
-![combined_64](https://github.com/user-attachments/assets/8ccb72d1-5b01-4da3-a229-0e713b7c8649)
+[todo]
 
 Figure 15a: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 64
 
-![combined_32](https://github.com/user-attachments/assets/05b79435-34b4-407e-9885-79e6f1a4d386)
-
+[todo]
 Figure 15b: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 32
 
 The confusion matrices for the combined dataset (Figures 15a and 15b) show error levels intermediate between the Tufts and Charlotte experiments. While the diagonal elements are strong, confirming the high overall accuracy (achieving 90% for batch 64 and 87% for batch 32, as mentioned earlier), the off-diagonal counts are non-negligible. For batch size 64 (Figure 15a), 1096 females and 970 males were correctly identified. Misclassifications included 49 females predicted as male and a notably higher number of 175 males predicted as female. With batch size 32 (Figure 15b), the model correctly identified 1126 females and 869 males. In this case, the asymmetry was even more pronounced: only 19 females were misclassified as male, while a substantial 276 males were misclassified as female. Both matrices highlight the model's tendency, particularly with batch size 32, to misclassify males as females more often than the reverse when dealing with data combined from different thermal cameras and conditions.
@@ -703,11 +702,16 @@ These examples in Figure 16 offer a qualitative glimpse into the model's behavio
 ## 5. Discussion and Future Scope
 
 Thermal imaging presents a compelling alternative to visible spectrum imaging for gender classification, particularly in challenging environmental conditions where illumination invariance is paramount. This study dives into the efficacy of deep learning, specifically Convolutional Neural Networks (CNNs), for this task, evaluating established architectures and introducing a novel model, TH-SE-ResNet, tailored for thermal facial data. Our experiments leveraged the Tufts University and Charlotte-ThermalFace datasets, both individually and combined, providing a rigorous testbed for model performance and generalization.
+
 The results presented herein demonstrate the substantial potential of deep learning for thermal gender classification, while also highlighting significant performance variations across different architectures and datasets. Our proposed TH-SE-ResNet consistently emerged as the top-performing model across all dataset configurations. On the Tufts dataset, TH-SE-ResNet achieved a remarkable accuracy of up to 97% (Table 5), notably surpassing the performance of other evaluated architectures like AlexNet (86%) and standard ResNet50 (85%). This performance exceeds the 95.0% accuracy reported by Chatterjee and Zaman (2023) using a standard ResNet-50 architecture, even with their application of Kalman filtering for preprocessing on the same datasets. Furthermore, our result compares favorably with the 94.9% accuracy achieved by Prihodova et al. (2022) using VGG models, although their work focused on thermal hand images, a different biometric modality requiring controlled acquisition. The high accuracy of TH-SE-ResNet underscores the benefit of its specialized design, incorporating channel adaptation and Squeeze-and-Excitation (SE) blocks, which appear particularly effective for extracting discriminative gender-specific thermal features compared to the more generic architectures evaluated previously.
 Performance on the Charlotte dataset proved more challenging for all models, likely due to its inherent variability and limited subject pool, resulting in lower overall accuracies. Nonetheless, TH-SE-ResNet maintained its lead, achieving up to 85% accuracy (Table 6). While lower than its Tufts performance, this still represents a strong result on this difficult dataset. In contrast, standard ResNet50's performance dropped significantly to 56-60%, suggesting that while ResNet architectures are powerful, standard implementations may struggle with the specific nuances and potential quality variations within certain thermal datasets without targeted adaptations like those in TH-SE-ResNet. Our model's performance also contrasts with the moderate accuracies (82-85%) reported in UAV-based thermal studies using models like AlexNet and GoogLeNet, which faced additional challenges like image instability and variable distance. While not a direct comparison due to differing application scenarios, TH-SE-ResNet's result on the static Charlotte dataset indicates a strong baseline capability.
+
 Perhaps most significantly, TH-SE-ResNet demonstrated robust generalization when evaluated on the combined dataset, achieving 90% accuracy (Table 7). This is a crucial finding, as real-world applications often require models to handle data from diverse sources and conditions. This result surpasses the accuracy levels reported by Gurram et al. (2024) for models like AlexNet (approx. 82.6%) and even InceptionV3 (92.3%) in their benchmark study on thermal data, although dataset specifics differ. Our architecture's ability to handle the combined dataset effectively can be attributed partly to the Channel Input Adapter, which addresses the practical challenge of integrating datasets with different channel formats (single-channel Charlotte vs. three-channel Tufts)—a hurdle not explicitly tackled by models like Cloud_Res proposed by Jalil et al. (2023).
+
 Furthermore, our work addressed the issue of gender bias noted in prior studies. Jalil et al. (2022) observed skewed performance favoring male predictions in their IRT_ResNet evaluations. While some baseline models in our study exhibited imbalances (e.g., AlexNet on Tufts favouring male recall), TH-SE-ResNet achieved more balanced precision, recall, and F1 scores across genders (Tables 5, 6, 7, and confusion matrices Figures 9, 12, 15), particularly evident in the high weighted F1-scores (up to 0.97 on Tufts, 0.90 on Combined). This suggests that the combination of SE blocks enhancing feature discrimination and our balanced training approach successfully mitigated the pronounced bias reported previously.
+
 The integration of SE blocks appears critical to TH-SE-ResNet's success, allowing the model to adaptively recalibrate channel-wise feature responses. This aligns with the findings of Gurram et al. (2024) who noted the importance of architectures capable of capturing both local and global patterns, which shallower networks like AlexNet struggled with. The attention mechanism helps focus on subtle but discriminative thermal patterns relevant to gender, enhancing performance beyond standard ResNet blocks used by Chatterjee & Zaman (2023) or the basic CNN structure of Cloud_Res (Jalil et al., 2023).
+
 Despite the strong performance of TH-SE-ResNet, certain limitations persist. The performance drop observed on the Charlotte dataset highlights the sensitivity of even advanced models to dataset variability and quality. The reliance on publicly available datasets, while necessary for reproducibility, limits the scale and diversity compared to proprietary datasets potentially used in commercial applications. Real-world deployment scenarios, particularly mobile ones like drone-based surveillance, introduce complexities (motion blur, varying angles, environmental conditions) not fully captured in our current experimental setup.
 
 
