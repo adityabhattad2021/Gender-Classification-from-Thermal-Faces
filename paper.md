@@ -1,8 +1,8 @@
 ## 1. Introduction
 
-Gender classification has become a fundamental task in computer vision, with numerous applications across various domains including in-cabin driver monitoring systems, human-computer interaction, video surveillance, retail analytics, and psychological analysis. Traditionally, researchers have focused on gender classification using visible spectrum images of the human face. However, the performance of these systems can be significantly affected by challenging environmental factors such as varying illumination conditions, shadows, occlusions, and the time of day.
+Gender classification has become a foundational task in computer vision, with various applications across multiple domains including in-cabin driver monitoring systems, human-computer interaction, video surveillance, retail analytics, and psychological analysis. Traditionally, researchers have focused on gender classification using visible spectrum images of the human face. However, the performance of these systems can be easily affected by challenging environmental factors such as varying illumination conditions, shadows, occlusions, and the time of day.
 
-To overcome these limitations, there has been a growing interest in exploring alternative or complementary sensing modalities, such as **thermal imaging**. Thermal imaging offers several advantages as it does not rely on external illumination and provides a distinct perspective on an imaged scene compared to conventional visible light sensors. This makes it a potentially more robust solution for gender classification in diverse and uncontrolled environments. Furthermore, thermal imaging can easily detect people even in total darkness, expanding its applicability in security systems. Beyond security, thermal signatures can provide complementary information in human-computer interaction, potentially revealing subtle physiological indicators relevant to gender.
+To overcome these limitations, there has been a growing interest in exploring alternative sensing modalities, such as **thermal imaging**. Thermal imaging offers various advantages as it does not rely on external illumination and provides a distinct perspective on an imaged scene compared to conventional visible light sensors. This makes it a potentially more robust solution for gender classification in diverse and uncontrolled environments. Furthermore, thermal imaging can easily detect people even in total darkness, expanding its applicability in security systems. Beyond security, thermal signatures can provide complementary information in human-computer interaction, potentially revealing subtle physiological indicators relevant to gender.
 
 Despite the benefits, thermal images typically lack some of the detailed facial definitions present in visible spectrum images, posing a challenge for accurate classification. To address this, the application of **deep learning**, particularly **Convolutional Neural Networks (CNNs)**, has shown significant promise in learning intricate patterns from thermal data for gender classification.
 
@@ -58,6 +58,7 @@ In conclusion, while existing literature has made considerable strides in levera
 The Tufts University Thermal Face Dataset represents a comprehensive multimodal collection comprising over 10,000 images across various modalities acquired from a diverse cohort of 113 participants (74 females, 39 males). For our research, we specifically utilized the thermal subset containing approximately 1,400 images. The age distribution spans from 4 to 70 years, with subjects originating from more than 15 countries, thus providing substantial demographic variability. Image acquisition was conducted using a FLIR Vue Pro thermal camera under controlled indoor environmental conditions. Participants were positioned at a standardized distance from the imaging apparatus to maintain consistency. For our investigation, we specifically utilized two subsets: TD_IR_E (Emotion), which contains images depicting five distinct facial expressions (neutral, smile, eyes closed, shocked, and with sunglasses), and TD_IR_A (Around), which encompasses images captured from nine different camera positions arranged in a semicircular configuration around each participant. A significant challenge encountered with this dataset was the pronounced gender imbalance, with approximately 30.32% female and 69.68% male images. To mitigate this imbalance and enhance model robustness, we implemented targeted data augmentation techniques specifically for the underrepresented female class, including controlled geometric transformations and intensity adjustments while preserving critical thermal signature characteristics.
 
 ![tufts_grid](https://github.com/user-attachments/assets/3b896a26-95b9-4c6b-b02a-f22fed2de0a6)
+**Figure 1: Tufts University Thermal Face Dataset** - A grid showing original thermal facial images alongside various augmented versions (without normalization).
 
 
 #### 3.1.2 Charlotte-ThermalFace Dataset
@@ -65,12 +66,13 @@ The Tufts University Thermal Face Dataset represents a comprehensive multimodal 
 The Charlotte-ThermalFace Dataset comprises approximately 10,364 thermal facial images from 10 subjects, collected under varying conditions (e.g., distance, head position, temperature). This dataset was not specifically created for gender detection tasks, but we repurposed it for our gender classification research. Based on image characteristics, we infer that data acquisition likely employed a FLIR-based thermal imaging system. In contrast to the Tufts collection, the Charlotte dataset exhibits near-perfect gender balance with approximately 50.10% female and 49.90% male. This balanced distribution provided an advantageous counterpoint to the gender imbalance present in the Tufts dataset.
 
 ![charlotte_grid](https://github.com/user-attachments/assets/3c6c179a-e9fe-43d4-a16d-ca780c4d42c9)
+**Figure 2: Charlotte-ThermalFace Dataset** - A grid showing original thermal facial images alongside various augmented versions (without normalization).
 
 #### 3.1.3 Combined Dataset
 
 To enhance data diversity and expand the training corpus, we constructed a combined dataset by integrating the Tufts and Charlotte collections following a systematic merging protocol. A significant technical challenge encountered during this integration was the channel discrepancy between datasets—the Charlotte images were originally single-channel thermal representations, whereas the Tufts dataset employed a three-channel format. To address this incompatibility, we implemented channel replication for the Charlotte images, duplicating the single thermal channel across three channels to establish format consistency with the Tufts data structure. Furthermore, to prevent model bias towards the overrepresented class, we carefully balanced the gender distribution by selecting an equal number of images per gender category through strategic sampling. This integration yielded a substantially enlarged dataset of approximately 11,921 images with perfect gender balance (50% female, 50% male), thereby providing our models with enhanced training diversity spanning different thermal imaging conditions, acquisition parameters, and subject characteristics.
 
-**Table 1: Summary of Datasets**
+**Table 2: Summary of Datasets**
 
 | Dataset    | Size (Images) | Gender Distribution     | Channels                        |  
 |------------|---------------|-------------------------|---------------------------------|  
@@ -91,7 +93,7 @@ For the Tufts dataset, we addressed the gender imbalance during augmentation, en
 
 
 ![dataset_partitioning_schema](https://github.com/user-attachments/assets/06a2b046-8513-4092-9345-ad485141a975)
-**Figure 1: Subject-Disjoint Dataset Partitioning Schema** - A diagram showing the hierarchical organization and separation of subjects by gender across train/test splits.
+**Figure 3: Subject-Disjoint Dataset Partitioning Schema** - A diagram showing the hierarchical organization and separation of subjects by gender across train/test splits.
 
 
 ### 3.2.2 Image Normalization and Standardization
@@ -105,7 +107,7 @@ The Charlotte dataset's single-channel thermal images required special handling 
 Images were resized according to model-specific requirements—224×224 pixels for AlexNet, VGG, ResNet, and EfficientNet; 299×299 pixels for Inception. This standardization ensured consistent spatial dimensions while preserving the aspect ratio through center cropping, thus maintaining the integrity of facial thermal patterns.
 
 
-**Table 2: Model-Specific Normalization Parameters**
+**Table 3: Model-Specific Normalization Parameters**
 | Model Type | Input Size | Normalization Values | Channels | Rationale |
 |------------|------------|----------------------|----------|-----------|
 | AlexNet/VGG/ResNet/EfficientNet | 224×224 | mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5] | 3 | Optimized for thermal intensity distribution |
@@ -130,16 +132,17 @@ For all models, we maintained separate transformation pipelines for training and
 This carefully engineered preprocessing and augmentation pipeline provided our models with high-quality, balanced training data while preserving the critical thermal signatures necessary for accurate gender classification in thermal facial imagery.
 
 ![new_thermal_augmentation_combined_examplesaa](https://github.com/user-attachments/assets/8842aedb-3c13-432e-b7af-baa0b1c6c789)
-**Figure 2: Thermal Image Augmentation Examples** - A grid showing original thermal facial images alongside various augmented versions (without normalization).
+**Figure 4: Thermal Image Augmentation Examples** - A grid showing original thermal facial images alongside various augmented versions (without normalization).
 
 
-**Table 3: Final Experimental Dataset Configurations**
+**Table 4: Final Experimental Dataset Configurations**
 | Experiment | Training Set | Testing Set | Total Training Images | Total Testing Images |
 |------------|--------------|-------------|------------------------|----------------------|
 | Tufts-only | Tufts train | Tufts test | ~1,600* | 330 |
 | Charlotte-only | Charlotte train | Charlotte test | ~16,000* | 2,000 |
 | Combined | Combined train | Combined test | 18,200 | 2,290 |
-*Approximate values after augmentation
+
+**\*Approximate values after augmentation**
 
 ## 3.3 Proposed CNN Architecture
 
@@ -155,7 +158,7 @@ The proposed architecture enhances the standard ResNet-50 by integrating three k
 
 
 ![Architecture](https://github.com/user-attachments/assets/91b98f31-c02b-4c24-a38f-013f90641ae7)
-- **Figure 4: Overall Architecture of TH-SE-ResNet** - A comprehensive diagram showing the complete model architecture with all components connected, highlighting the modifications to the standard ResNet-50.
+- **Figure 5: Overall Architecture of TH-SE-ResNet** - A comprehensive diagram showing the complete model architecture with all components connected, highlighting the modifications to the standard ResNet-50.
 
 ### 3.3.2 Channel Input Adapter
 
@@ -421,9 +424,7 @@ Despite its relatively lightweight design (5.3 million parameters), EfficientNet
 
 The swish activation function ($x \cdot \text{sigmoid}(x)$) used throughout EfficientNet potentially offers advantages over ReLU activations for thermal imagery by providing smoother gradients for small activation values, which may better preserve subtle thermal variation information during forward propagation.
 
-### Comparison of Architectural Characteristics
-
-**Table 4: Comprehensive Baseline Model Specifications**
+**Table 5: Comprehensive Baseline Model Specifications**
 
 | Model | Depth | Parameters (M) | Input Size | Key Components | Potential Thermal Imaging Advantages |
 |-------------|-------|----------------|------------|------------------------------------|--------------------------------------------|
@@ -433,7 +434,6 @@ The swish activation function ($x \cdot \text{sigmoid}(x)$) used throughout Effi
 | ResNet50 | 50 | 25.6 | 224×224 | Bottleneck residual blocks | Deep thermal feature hierarchies with gradient preservation |
 | EfficientNet-B0 | 82 | 5.3 | 224×224 | MBConv with SE, Compound scaling | Adaptive attention to gender-discriminative thermal channels |
 
-**Figure 6: Architectural Diagrams** – Detailed schematic representations of each baseline model's layer configuration, highlighting specific components relevant to thermal feature extraction.
 
 ### 3.4.2 Input Adaptation and Training Protocol
 
@@ -459,11 +459,14 @@ For training, all models were optimized using the Adam algorithm, configured wit
 Each model underwent training for 10 epochs, a duration determined through preliminary experiments to strike a balance between achieving convergence and minimizing computational overhead. The experiments were executed on an NVIDIA GeForce RTX 4090, a high-performance hardware platform that facilitated rapid iteration. To optimize data handling and reduce training bottlenecks, we employed PyTorch’s DataLoader with settings of `num_workers=8` and `pin_memory=True`, ensuring efficient data transfer to the GPU and maximizing throughput during training.
 
 **Algorithm 3: Model Training Loop**
+
 Input: Training DataLoader D_train, Test DataLoader D_test, Model M, Optimizer Opt,
        Learning Rate Scheduler Sch, Loss Function Crit, Total Epochs N_epochs,
        Warmup Epochs N_warmup, Initial Learning Rate LR_init
 Output: Best performing Model M_best
+
 ```
+Procedure:
 1:  Initialize best_accuracy = 0.0
 2:  Initialize M_best = None
 3:  For epoch from 1 to N_epochs:
@@ -524,7 +527,7 @@ Output: Best performing Model M_best
 
 The Tufts dataset experiments yielded notable performance variations across the six tested models and two batch size configurations. Table 5 presents a comprehensive performance comparison, highlighting the accuracy, precision, recall, and F1 scores achieved by each model architecture.
 
-##### Table 5: Performance on Tufts Dataset
+##### Table 6: Performance on Tufts Dataset
 
 | Model | Batch Size | Accuracy | Precision (weighted) | Recall (weighted) | F1 (weighted) |
 |-------|------------|----------|----------------------|-------------------|---------------|
@@ -568,11 +571,11 @@ These learning curves (Figures 7 and 8) visually confirm the quantitative findin
 
 For a detailed view of the classification performance of the top-performing model, the confusion matrices for TH-SE-ResNet on the Tufts test set are shown.
 
-[todo]
+![tufts_64](https://github.com/user-attachments/assets/b2ca07bc-5df4-419a-b60c-a559b1c86788)
 
 Figure 9a: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 64
 
-[todo]
+![tufts_32](https://github.com/user-attachments/assets/5a682e6c-532b-475b-b2b3-7ca3548d3f87)
 
 Figure 9b: Confusion Matrix - TH-SE-ResNet, Tufts Dataset, Batch Size 32
 
@@ -582,7 +585,7 @@ The confusion matrices in Figures 9a and 9b provide a clear picture of TH-SE-Res
 
 The Charlotte dataset experiments revealed distinct performance patterns compared to the Tufts dataset, reflecting the unique challenges posed by this larger and more variable thermal image collection. Table 6 presents the comprehensive performance metrics for all six models across the two batch size configurations.
 
-##### Table 6: Performance on Charlotte Dataset
+##### Table 7: Performance on Charlotte Dataset
 
 | Model | Batch Size | Accuracy | Precision (weighted) | Recall (weighted) | F1 (weighted) |
 |-------|------------|----------|----------------------|-------------------|---------------|
@@ -633,11 +636,11 @@ Figures 10 and 11 depict the generally lower performance ceiling on the Charlott
 
 The confusion matrices for TH-SE-ResNet on the Charlotte dataset provide a breakdown of the errors.
 
-[todo]
+![charllate_64_](https://github.com/user-attachments/assets/b84bdbbe-1dea-48c2-a0cf-c5df0aa383ee)
 
 Figure 12a: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 64
 
-[todo]
+![charllate_32_](https://github.com/user-attachments/assets/62d661bb-924e-4da4-8f32-612fb1fb024e)
 
 Figure 12b: Confusion Matrix - TH-SE-ResNet, Charlotte Dataset, Batch Size 32
 
@@ -647,7 +650,7 @@ Compared to the Tufts results, the confusion matrices in Figures 12a and 12b sho
 
 After analyzing the performance on individual datasets, we also evaluated these models on a combined dataset integrating both Tufts and Charlotte-ThermalFace collections. This combination helps us to assess model generalization across different thermal imaging sources and environmental conditions. Table 7 presents the comprehensive performance metrics across all six architectures and both batch size configurations.
 
-##### Table 7: Performance on Combined Dataset
+##### Table 8: Performance on Combined Dataset
 
 | Model | Batch Size | Accuracy | Precision (weighted) | Recall (weighted) | F1 (weighted) |
 |-------|------------|----------|----------------------|-------------------|---------------|
@@ -682,11 +685,11 @@ Figures 13 and 14 illustrate that TH-SE-ResNet (blue line) maintained its charac
 
 The confusion matrices for TH-SE-ResNet provide insight into the specific error patterns on this mixed dataset.
 
-[todo]
+![combined_64](https://github.com/user-attachments/assets/8ccb72d1-5b01-4da3-a229-0e713b7c8649)
 
 Figure 15a: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 64
 
-[todo]
+![combined_32](https://github.com/user-attachments/assets/05b79435-34b4-407e-9885-79e6f1a4d386)
 Figure 15b: Confusion Matrix - TH-SE-ResNet, Combined Dataset, Batch Size 32
 
 The confusion matrices for the combined dataset (Figures 15a and 15b) show error levels intermediate between the Tufts and Charlotte experiments. While the diagonal elements are strong, confirming the high overall accuracy (achieving 90% for batch 64 and 87% for batch 32, as mentioned earlier), the off-diagonal counts are non-negligible. For batch size 64 (Figure 15a), 1096 females and 970 males were correctly identified. Misclassifications included 49 females predicted as male and a notably higher number of 175 males predicted as female. With batch size 32 (Figure 15b), the model correctly identified 1126 females and 869 males. In this case, the asymmetry was even more pronounced: only 19 females were misclassified as male, while a substantial 276 males were misclassified as female. Both matrices highlight the model's tendency, particularly with batch size 32, to misclassify males as females more often than the reverse when dealing with data combined from different thermal cameras and conditions.
@@ -715,7 +718,7 @@ The integration of SE blocks appears critical to TH-SE-ResNet's success, allowin
 Despite the strong performance of TH-SE-ResNet, certain limitations persist. The performance drop observed on the Charlotte dataset highlights the sensitivity of even advanced models to dataset variability and quality. The reliance on publicly available datasets, while necessary for reproducibility, limits the scale and diversity compared to proprietary datasets potentially used in commercial applications. Real-world deployment scenarios, particularly mobile ones like drone-based surveillance, introduce complexities (motion blur, varying angles, environmental conditions) not fully captured in our current experimental setup.
 
 
-Table 8: summarizes the performance of TH-SE-ResNet against other architectures in the literature, highlighting the key differences in datasets, conditions, and results.
+Table 9: summarizes the performance of TH-SE-ResNet against other architectures in the literature, highlighting the key differences in datasets, conditions, and results.
 
 
 | S.N. | Name of Architecture           | Dataset Used & Conditions (as described/implied)                     | Accuracy / Key Result (with Comparative Note)                                                                                                                               |
@@ -732,39 +735,4 @@ Table 8: summarizes the performance of TH-SE-ResNet against other architectures 
 
 ##### Future Scope
 Building upon these findings, several avenues warrant exploration. The development of larger, more diverse, and standardized thermal facial datasets encompassing varied demographics, environmental conditions, and occlusions remains critical for advancing the field and improving model generalization beyond the limitations seen across many studies, including ours. Investigating architectural enhancements, perhaps incorporating transformer-based modules for capturing long-range dependencies in thermal patterns or exploring more sophisticated multimodal fusion techniques (e.g., combining thermal with depth or near-infrared data in a privacy-preserving manner), could yield further performance gains, potentially exceeding the capabilities demonstrated by current CNN-based approaches like TH-SE-ResNet and those reviewed. Addressing the practical deployment challenges through model compression techniques (quantization, pruning) is essential for enabling real-time performance on edge devices, moving beyond the cloud-centric approach of Jalil et al. (2023) towards broader applicability. Finally, continued focus on fairness and bias mitigation across different demographic groups is crucial for the responsible development and deployment of thermal biometric systems. Extending the application of architectures like TH-SE-ResNet to related tasks such as age estimation or emotion recognition from thermal data also presents a promising direction for future research.
-
-
-
-## 6. Summary
-
-Gender classification is a fundamental task in computer vision, crucial for applications ranging from driver monitoring and video surveillance to human-computer interaction and retail analytics. While traditional systems rely on visible spectrum facial images, their performance deteriorates under variable lighting, shadows, occlusions, and other real-world challenges. This paper addresses these limitations by leveraging thermal facial imaging, which captures heat-based physiological patterns and remains robust in low-light and visually complex environments.
-
-Although thermal imaging offers clear benefits, its use in gender classification poses challenges due to lower resolution and a lack of detailed facial features compared to RGB images. To address this, the paper explores the use of deep learning, particularly Convolutional Neural Networks (CNNs), for learning meaningful features directly from thermal images.
-
-We conduct an extensive evaluation of state-of-the-art CNN architectures—including AlexNet, VGG, InceptionV3, ResNet50, and EfficientNet-B0—on two publicly available thermal datasets: Tufts University Thermal Face and Charlotte-ThermalFace. Additionally, a combined dataset is created to enhance generalizability and test cross-domain performance. Since the datasets differ in channel configuration and class distribution, we introduce preprocessing pipelines, augmentation techniques, and class-balancing strategies to ensure fair and effective training.
-
-To further push the performance boundary, we propose a novel architecture, TH-SE-ResNet, a modified version of ResNet-50 designed specifically for thermal image-based gender classification. Key enhancements include:
-
-A Channel Input Adapter to harmonize inputs from datasets with varying channel formats.
-
-Squeeze-and-Excitation (SE) blocks that improve channel-wise attention, enabling the model to focus on discriminative thermal features.
-
-A redesigned classifier head optimized for binary gender classification.
-
-Use of transfer learning by initializing with ImageNet-pretrained weights, accelerating training convergence and improving performance even with limited data.
-
-Our model was derived through a rigorous empirical process, iterating through multiple architecture variants and hyperparameter configurations. The final version achieved state-of-the-art results across both individual and combined datasets. On the Tufts and Charlotte datasets, TH-SE-ResNet outperformed standard CNNs in all key metrics (accuracy, precision, recall, F1-score), and demonstrated robust performance even when datasets were combined. Notably, it maintained a better gender balance in predictions, addressing the male-bias commonly observed in previous models like Cloud_Res and IRT_ResNet.
-
-In comparison, standard ResNet-50 models showed poor generalizability across datasets, while EfficientNet-B0 and AlexNet, though lightweight, underperformed due to architectural limitations in capturing deeper features in thermal data. TH-SE-ResNet proved especially effective in heterogeneous settings, sustaining strong accuracy (87–90%) and balanced F1-scores (0.87–0.90) even in the presence of occlusion and low signal quality.
-
-Overall, this paper makes several key contributions:
-A thorough benchmarking of CNN models for thermal facial gender classification.
-Integration of preprocessing, augmentation, and class balancing for robust training.
-A novel CNN architecture tailored to the unique challenges of thermal imaging.
-Demonstration of generalizability through testing on combined datasets.
-Insights into the limitations of existing models and strategies to mitigate them.
-
-The proposed TH-SE-ResNet represents a scalable and deployable solution for real-world applications in surveillance, smart vehicles, and beyond, offering fairness, accuracy, and efficiency in thermal gender classification systems.
-
-
 
