@@ -4,7 +4,7 @@
 <div align="center">
 
 # **DEEP LEARNING-BASED GENDER CLASSIFICATION USING THERMAL FACIAL IMAGES**
-**(Font Size 24, Bold, Capital)**
+
 
 <br><br>
 
@@ -12,7 +12,6 @@ Internship Report submitted to <br>
 Shri Ramdeobaba College of Engineering & Management, Nagpur <br>
 in partial fulfillment of requirement for the award of <br>
 degree of <br>
-**(12pt)**
 
 <br>
 
@@ -22,42 +21,37 @@ degree of <br>
 <br>
 
 In <br>
-**(12pt)**
 
 <br>
 
 ## **COMPUTER SCIENCE AND ENGINEERING**
-**(16pt, Capital, Bold)**
 
 <br><br>
 
 By <br>
-**(12pt)**
-
 <br>
 
-### **[Your Name]**
-**(14pt, Bold, Title Case)**
+### **Aditya Bhattad**
+### **Etisha Shastri**
 
 <br><br>
 
 Guide <br>
 **(12pt)** <br>
-### **Dr. [Internal Guide's Name]**
-**(14pt, Bold, Title Case)**
+### **Dr. Pravin Sonsare**
+### **Dr. Khushboo Khurana**
+### **Dr. Preeti Voditel**
+
 
 <br><br><br>
 
 **Department of Computer Science and Engineering** <br>
-**(14pt)** <br>
 Shri Ramdeobaba College of Engineering & Management, Nagpur 440 013 <br>
 (An Autonomous Institute affiliated to Rashtrasant Tukdoji Maharaj Nagpur University Nagpur)
 
 <br><br>
 
-**[Month] [Year]** <br>
-**(14pt)** <br>
-*(e.g., May 2024)*
+**May 2025** <br>
 
 </div>
 
@@ -66,117 +60,25 @@ Shri Ramdeobaba College of Engineering & Management, Nagpur 440 013 <br>
 ---
 <!-- Page Break -->
 
-# (Inside Cover Page - Same as Cover Page)
+<br>
 
-<br><br><br><br>
-
-<div align="center">
-
-# **DEEP LEARNING-BASED GENDER CLASSIFICATION USING THERMAL FACIAL IMAGES**
-**(Font Size 24, Bold, Capital)**
+This is to certify that the Internship Report on **“Deep Learning-Based Gender Classification Using Thermal Facial Images”** is a bonafide work of **Aditya Bhattad and Etisha Shastri** submitted to the Rashtrasant Tukdoji Maharaj Nagpur University, Nagpur in partial fulfillment of the award of a Bachelor of Technology, in Computer Science and Engineering has been carried out at **RCOEM** during the academic year **2024-25**.
 
 <br><br>
 
-Internship Report submitted to <br>
-Shri Ramdeobaba College of Engineering & Management, Nagpur <br>
-in partial fulfillment of requirement for the award of <br>
-degree of <br>
-**(12pt)**
-
-<br>
-
-## **Bachelor of Technology**
-**(16pt, Bold, Title Case)**
-
-<br>
-
-In <br>
-**(12pt)**
-
-<br>
-
-## **COMPUTER SCIENCE AND ENGINEERING**
-**(16pt, Capital, Bold)**
-
-<br><br>
-
-By <br>
-**(12pt)**
-
-<br>
-
-### **[Your Name]**
-**(14pt, Bold, Title Case)**
-
-<br><br>
-
-Guide <br>
-**(12pt)** <br>
-### **Dr. [Internal Guide's Name]**
-**(14pt, Bold, Title Case)**
-
-<br><br><br>
-
-**Department of Computer Science and Engineering** <br>
-**(14pt)** <br>
-Shri Ramdeobaba College of Engineering & Management, Nagpur 440 013 <br>
-(An Autonomous Institute affiliated to Rashtrasant Tukdoji Maharaj Nagpur University Nagpur)
-
-<br><br>
-
-**[Month] [Year]** <br>
-**(14pt)** <br>
-*(e.g., May 2024)*
-
-</div>
-
-<br><br><br><br>
-
----
-<!-- Page Break -->
-
-# (Specimen B-2: Certificate)
-
-<div align="center">
-
-**SHRI RAMDEOBABA COLLEGE OF ENGINEERING & MANAGEMENT, NAGPUR** <br>
-(An Autonomous Institute Affiliated to Rashtrasant Tukdoji Maharaj Nagpur University Nagpur)
-
-<br>
-
-**Department of Computer Science and Engineering**
-
-<br><br>
-
-**CERTIFICATE**
-
-</div>
-
-<br>
-
-This is to certify that the Internship Report on **“Deep Learning-Based Gender Classification Using Thermal Facial Images”** is a bonafide work of **[Your Name]** submitted to the Rashtrasant Tukdoji Maharaj Nagpur University, Nagpur in partial fulfillment of the award of a Bachelor of Technology, in Computer Science and Engineering has been carried out at **[Name of the Company/Research Lab where internship was performed - e.g., RCOEM Advanced Vision Lab / XYZ Tech Solutions]** during the academic year **[Academic Year, e.g., 2023-2024]**.
-
-<br><br>
-
-Date: [Date of Submission]
-<br>
+Date: 12-05-2025 <br>
 Place: Nagpur
 
 <br><br><br>
 
 |                                         |                                                       |
 | :-------------------------------------- | :---------------------------------------------------- |
-| Prof./Dr. [Name of Industry Mentor]     | Dr. P. Voditel                                        |
-| Industry Mentor                         | H.O.D                                                 |
-| [Name of the Company]                   | Department of Computer Science Engineering            |
+| Dr. Pravin Sonsare    | Dr. P. Voditel                                        |
+| Project Guide                         | H.O.D                                                 |
+| Department of Computer Science Engineering                    | Department of Computer Science Engineering            |
 
 <br><br>
 
-|                                         |                                                       |
-| :-------------------------------------- | :---------------------------------------------------- |
-| Prof./Dr. [Name of Internal Guide]      | Dr. Parag Jawarkar                                    |
-| Internal Guide                          | Dean-CDPC                                             |
-| Department of Computer Science Engineering |                                                       |
 
 <br><br>
 
@@ -188,7 +90,6 @@ Principal
 ---
 <!-- Page Break -->
 
-# (Specimen C: Declaration)
 
 <div align="center">
 **DECLARATION**
@@ -196,9 +97,9 @@ Principal
 
 <br>
 
-I, **[Your Name]**, a student of Bachelor of Technology in Computer Science and Engineering at Shri Ramdeobaba College of Engineering & Management, Nagpur, hereby declare that the Internship Report titled **“Deep Learning-Based Gender Classification Using Thermal Facial Images”** is an authentic record of my own work carried out at **[Name of the Company/Research Lab where internship was performed]** during the period **[Start Date of Internship]** to **[End Date of Internship]**, under the guidance of **[Name of Industry Mentor]** (Industry Mentor) and **Dr. [Name of Internal Guide]** (Internal Guide).
+We, **Aditya Bhattad and Etisha Shastri**, students of Bachelor of Technology in Computer Science and Engineering at Shri Ramdeobaba College of Engineering & Management, Nagpur, hereby declare that the Internship Report titled **“Deep Learning-Based Gender Classification Using Thermal Facial Images”** is an authentic record of my own work carried out at **RCOEM**, under the guidance of **Dr. Pravin Sonsare**.
 
-The matter embodied in this report has not been submitted by me for the award of any other degree or diploma. I further declare that this report is prepared in accordance with the Non-Disclosure Agreement (NDA) specified by the respective industry/organization, if applicable.
+The matter embodied in this report has not been submitted by us for the award of any other degree or diploma. I further declare that this report is prepared in accordance with the Non-Disclosure Agreement (NDA) specified by the respective industry/organization, if applicable.
 
 To the best of my knowledge and belief, the report is free from plagiarism and contains no material previously published or written by another person except where due reference is made in the text.
 
@@ -209,8 +110,11 @@ Place: Nagpur
 
 <br><br>
 
-**[Your Name]** <br>
-Roll No.: [Your Roll Number] <br>
+**Aditya Bhattad** <br>
+Roll No.: 28 <br>
+Branch: Computer Science and Engineering
+**Etisha Shastri** <br>
+Roll No.: [Roll Number] <br>
 Branch: Computer Science and Engineering
 
 ---
@@ -218,20 +122,20 @@ Branch: Computer Science and Engineering
 
 # ACKNOWLEDGEMENTS
 
-I wish to express my sincere gratitude to my internal guide, **Dr. [Name of Internal Guide]**, Professor, Department of Computer Science and Engineering, Shri Ramdeobaba College of Engineering and Management, Nagpur, for providing invaluable guidance, encouragement, and support throughout the course of this internship project. His insightful suggestions and critical feedback were instrumental in shaping this work.
+We wish to express my sincere gratitude to my internal guide, **Dr. Pravin Sonsare**, Professor, Department of Computer Science and Engineering, Shri Ramdeobaba College of Engineering and Management, Nagpur, for providing invaluable guidance, encouragement, and support throughout the course of this internship project. His insightful suggestions and critical feedback were instrumental in shaping this work.
 
-I am also immensely grateful to **[Name of Industry Mentor]**, **[Designation of Industry Mentor]** at **[Name of Company/Research Lab]**, for granting me the opportunity to undertake this internship and for his/her constant supervision, valuable inputs, and for providing the necessary resources and environment to conduct this research.
+We are also immensely grateful to **Dr. Pravin Sonsare**, for granting me the opportunity to undertake this internship and for his/her constant supervision, valuable inputs, and for providing the necessary resources and environment to conduct this research.
 
-I would like to thank **Dr. P. Voditel**, Head of the Department of Computer Science and Engineering, and **Dr. Parag Jawarkar**, Dean-CDPC, for their support and for fostering an environment conducive to research and learning.
+We would like to thank **Dr. P. Voditel**, Head of the Department of Computer Science and Engineering, and **Dr. Parag Jawarkar**, Dean-CDPC, for their support and for fostering an environment conducive to research and learning.
 
-My heartfelt appreciation goes to **Dr. M. B. Chandak**, Principal, Shri Ramdeobaba College of Engineering and Management, for his leadership and for providing the platform for such enriching experiences.
+Our heartfelt appreciation goes to **Dr. M. B. Chandak**, Principal, Shri Ramdeobaba College of Engineering and Management, for his leadership and for providing the platform for such enriching experiences.
 
-I am thankful to the faculty members and staff of the Department of Computer Science and Engineering for their cooperation and assistance.
+We are thankful to the faculty members and staff of the Department of Computer Science and Engineering for their cooperation and assistance.
 
-Finally, I would like to express my profound gratitude to my parents and friends for their unwavering support, patience, and encouragement throughout my academic endeavors and during this internship.
 
 <br>
-**[Your Name]**
+**Aditya Bhattad**
+**Etisha Shastri**
 
 ---
 <!-- Page Break -->
@@ -245,7 +149,6 @@ Gender classification is a pivotal task in computer vision with wide-ranging app
 
 # TABLE OF CONTENTS
 
-**(Page numbers will be Roman for this section, actual numbers to be filled after final formatting in Word)**
 
 i.  Technology/Tools Used
 ii.  Project Domain
@@ -315,9 +218,6 @@ List of Symbols, Abbreviations or Nomenclature
 **Chapter 6: Conclusion**
 
 **References**
-
-**Details of Industry internship/training along with photocopy of its certificate**
-**Photograph with Industry Mentor (If available)**
 
 ---
 <!-- Page Break -->
@@ -425,11 +325,9 @@ The project followed a systematic research and development methodology, encompas
 ---
 <!-- Page Break -->
 
-## iv. About Project (Project Flow Diagram)
-
+## iv. About Project 
 The project aims to develop and evaluate robust deep learning models for gender classification using thermal facial images. The overall workflow can be visualized as follows:
 
-**(A textual description of the flow, ideally supplemented by a visual diagram if this were a live document. Figure 7 from this report [original paper's Figure 4] is key here.)**
 
 **Project Flow:**
 
@@ -589,8 +487,6 @@ The robustness of thermal imaging to varying light conditions and its potential 
 
 # LIST OF FIGURES
 
-**(Page numbers to be filled after final formatting in Word)**
-
 **Figure 1:** Sample Images from the Tufts University Thermal Face Dataset Grid
 **Figure 2:** Sample Images from the Charlotte-ThermalFace Dataset Grid
 **Figure 3:** Subject-Disjoint Dataset Partitioning Schema
@@ -619,8 +515,6 @@ The robustness of thermal imaging to varying light conditions and its potential 
 <!-- Page Break -->
 
 # LIST OF TABLES
-
-**(Page numbers to be filled after final formatting in Word)**
 
 **Table 1:** Summary of Datasets
 **Table 2:** Model-Specific Normalization Parameters
@@ -1335,38 +1229,5 @@ The proposed TH-SE-ResNet represents a significant step towards a scalable and d
 13. Simonyan, K., & Zisserman, A. (2014). Very deep convolutional networks for large-scale image recognition. *arXiv preprint arXiv:1409.1556*. (Published at ICLR 2015).
 14. Szegedy, C., Vanhoucke, V., Ioffe, S., Shlens, J., & Wojna, Z. (2016). Rethinking the inception architecture for computer vision. *Proceedings of the IEEE conference on computer vision and pattern recognition (CVPR)*, 2818-2826.
 15. Tan, M., & Le, Q. (2019). Efficientnet: Rethinking model scaling for convolutional neural networks. *International conference on machine learning (ICML)*, 6105-6114. PMLR.
-
----
-<!-- Page Break -->
-
-# Details of Industry internship/training along with photocopy of its certificate
-
-**(This section would contain:)**
-1.  A brief description of the company/research lab where the internship was undertaken.
-    *   **Name:** [Name of Company/Research Lab]
-    *   **Location:** [Location]
-    *   **Brief Overview:** [e.g., "XYZ Tech Solutions is a leading innovator in AI-driven computer vision solutions..." or "The Advanced Vision Lab at RCOEM focuses on cutting-edge research in image processing and machine learning..."]
-    *   **Internship Duration:** [Start Date] to [End Date]
-    *   **Department/Team:** [e.g., Research and Development / AI Solutions Team]
-
-2.  **Photocopy of Internship Completion Certificate**
-    *(A scanned image of the certificate would be inserted here in the Word document.)*
-
-    **(Placeholder text if no image is available for direct Markdown embedding):**
-    [A photocopy of the internship completion certificate from [Name of Company/Research Lab] confirming the successful completion of the internship from [Start Date] to [End Date] is appended here.]
-    <!-- ![Internship Certificate](path/to/your/certificate_image.jpg) -->
-
----
-<!-- Page Break -->
-
-# Photograph with Industry Mentor (If available)
-
-**(This section would contain:)**
-*   A photograph of you (the intern) with your industry mentor, **[Name of Industry Mentor]**.
-    *(The photograph would be inserted here in the Word document.)*
-
-    **(Placeholder text if no image is available for direct Markdown embedding):**
-    [A photograph with the industry mentor was not available at the time of report submission / A photograph taken with [Name of Industry Mentor] at [Name of Company/Research Lab] is presented here.]
-    <!-- ![Photo with Mentor](path/to/your/photo_with_mentor.jpg) -->
 
 ---
